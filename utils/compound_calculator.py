@@ -100,26 +100,38 @@ def calculate_portfolio_growth(portfolio):
     # Calculate total portfolio growth (annual data points only)
     years = np.arange(portfolio.years_to_grow + 1)
     
-    total_growth = pd.DataFrame({
-        'Year': years,
-        'US Stocks': us_growth[us_growth['Year'].isin(years)]['Balance'].values,
-        'International Stocks': intl_growth[intl_growth['Year'].isin(years)]['Balance'].values,
-        'Bonds': bond_growth[bond_growth['Year'].isin(years)]['Balance'].values
-    })
+    # Create a new DataFrame with just the years we want
+    annual_data = []
     
-    # Add total balance column
-    total_growth['Total Balance'] = (
-        total_growth['US Stocks'] + 
-        total_growth['International Stocks'] + 
-        total_growth['Bonds']
-    )
+    for year in years:
+        # Get the data for this year from each component
+        us_year_data = us_growth[us_growth['Year'] == year].iloc[0] if not us_growth[us_growth['Year'] == year].empty else None
+        intl_year_data = intl_growth[intl_growth['Year'] == year].iloc[0] if not intl_growth[intl_growth['Year'] == year].empty else None
+        bond_year_data = bond_growth[bond_growth['Year'] == year].iloc[0] if not bond_growth[bond_growth['Year'] == year].empty else None
+        
+        # Make sure we have data for all components
+        if us_year_data is not None and intl_year_data is not None and bond_year_data is not None:
+            us_balance = us_year_data['Balance']
+            intl_balance = intl_year_data['Balance']
+            bond_balance = bond_year_data['Balance']
+            
+            us_contribution = us_year_data['Contributions']
+            intl_contribution = intl_year_data['Contributions']
+            bond_contribution = bond_year_data['Contributions']
+            
+            annual_data.append({
+                'Year': year,
+                'US Stocks': us_balance,
+                'International Stocks': intl_balance,
+                'Bonds': bond_balance,
+                'Total Balance': us_balance + intl_balance + bond_balance,
+                'Total Contributions': us_contribution + intl_contribution + bond_contribution
+            })
     
-    # Calculate contributions and earnings
-    contributions_by_year = us_growth[us_growth['Year'].isin(years)]['Contributions'].values + \
-                            intl_growth[intl_growth['Year'].isin(years)]['Contributions'].values + \
-                            bond_growth[bond_growth['Year'].isin(years)]['Contributions'].values
+    # Create the DataFrame
+    total_growth = pd.DataFrame(annual_data)
     
-    total_growth['Total Contributions'] = contributions_by_year
+    # Calculate total earnings
     total_growth['Total Earnings'] = total_growth['Total Balance'] - total_growth['Total Contributions']
     
     return total_growth
@@ -166,19 +178,27 @@ def calculate_fee_impact(portfolio, alternative_expense_ratio=None):
     # Get annual data points only
     years = np.arange(portfolio.years_to_grow + 1)
     
-    # Create comparison DataFrame
-    comparison = pd.DataFrame({
-        'Year': years,
-        f'Balance (Expense Ratio: {current_expense_ratio:.3%})': 
-            growth_current[growth_current['Year'].isin(years)]['Balance'].values,
-        f'Balance (Expense Ratio: {alternative_expense_ratio:.3%})': 
-            growth_alternative[growth_alternative['Year'].isin(years)]['Balance'].values
-    })
+    # Create a new DataFrame with just the years we want
+    comparison_data = []
     
-    # Calculate the difference (fee impact)
-    comparison['Fee Impact'] = (
-        comparison[f'Balance (Expense Ratio: {alternative_expense_ratio:.3%})'] - 
-        comparison[f'Balance (Expense Ratio: {current_expense_ratio:.3%})']
-    )
+    for year in years:
+        # Get the data for this year from each growth calculation
+        current_year_data = growth_current[growth_current['Year'] == year].iloc[0] if not growth_current[growth_current['Year'] == year].empty else None
+        alt_year_data = growth_alternative[growth_alternative['Year'] == year].iloc[0] if not growth_alternative[growth_alternative['Year'] == year].empty else None
+        
+        # Make sure we have data for both
+        if current_year_data is not None and alt_year_data is not None:
+            current_balance = current_year_data['Balance']
+            alt_balance = alt_year_data['Balance']
+            
+            comparison_data.append({
+                'Year': year,
+                f'Balance (Expense Ratio: {current_expense_ratio:.3%})': current_balance,
+                f'Balance (Expense Ratio: {alternative_expense_ratio:.3%})': alt_balance,
+                'Fee Impact': alt_balance - current_balance
+            })
+    
+    # Create comparison DataFrame
+    comparison = pd.DataFrame(comparison_data)
     
     return comparison

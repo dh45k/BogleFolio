@@ -264,7 +264,7 @@ def show_compound_growth_page(portfolio):
     # Add current expense ratio line
     fig_fee.add_trace(go.Scatter(
         x=fee_impact['Year'],
-        y=[float(val.replace('$', '').replace(',', '')) for val in fee_impact[f'Balance (Expense Ratio: {current_expense:.3%})'].astype(str)],
+        y=fee_impact[f'Balance (Expense Ratio: {current_expense:.3%})'],
         mode='lines',
         name=f'Current ({current_expense:.3%})',
         line=dict(color='rgb(31, 119, 180)', width=3)
@@ -273,7 +273,7 @@ def show_compound_growth_page(portfolio):
     # Add comparison expense ratio line
     fig_fee.add_trace(go.Scatter(
         x=fee_impact['Year'],
-        y=[float(val.replace('$', '').replace(',', '')) for val in fee_impact[f'Balance (Expense Ratio: {compare_expense:.3%})'].astype(str)],
+        y=fee_impact[f'Balance (Expense Ratio: {compare_expense:.3%})'],
         mode='lines',
         name=f'Lower ({compare_expense:.3%})',
         line=dict(color='rgb(44, 160, 44)', width=3)
@@ -301,8 +301,9 @@ def show_compound_growth_page(portfolio):
     
     # Show total fee impact at end of period
     final_impact = fee_impact.iloc[-1]['Fee Impact']
+    current_balance = fee_impact.iloc[-1][f'Balance (Expense Ratio: {current_expense:.3%})']
     st.metric(
         f"Total Fee Savings After {years_to_grow} Years",
         f"${final_impact:,.0f}",
-        f"{final_impact / float(fee_impact.iloc[-1][f'Balance (Expense Ratio: {current_expense:.3%})'].replace('$', '').replace(',', '')) * 100:.2f}%"
+        f"{final_impact / current_balance * 100:.2f}%"
     )
