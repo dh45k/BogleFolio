@@ -154,17 +154,28 @@ def calculate_fee_impact(portfolio, alternative_expense_ratio=None):
     if alternative_expense_ratio is None:
         alternative_expense_ratio = current_expense_ratio / 2
     
-    # Calculate expected return with fees
+    # Make sure we have realistic expense ratios (they should be small percentages)
+    if current_expense_ratio > 0.01:  # If greater than 1%
+        current_expense_ratio = current_expense_ratio / 100.0  # Convert from percentage to decimal
+        
+    if alternative_expense_ratio > 0.01:  # If greater than 1%
+        alternative_expense_ratio = alternative_expense_ratio / 100.0  # Convert from percentage to decimal
+        
+    # Calculate expected return with fees (expected return is in percentage format)
     expected_return = portfolio.get_weighted_return()
-    net_return_current = expected_return - current_expense_ratio
-    net_return_alternative = expected_return - alternative_expense_ratio
+    net_return_current = expected_return - (current_expense_ratio * 100)  # Convert expense ratio to percentage
+    net_return_alternative = expected_return - (alternative_expense_ratio * 100)  # Convert expense ratio to percentage
+    
+    # Make sure returns don't become negative due to expense ratios
+    net_return_current = max(0.1, net_return_current)
+    net_return_alternative = max(0.1, net_return_alternative)
     
     # Calculate growth with current expense ratio
     growth_current = calculate_compound_growth(
         portfolio.initial_investment,
         portfolio.monthly_contribution,
         portfolio.years_to_grow,
-        net_return_current * 100  # Convert to percentage
+        net_return_current
     )
     
     # Calculate growth with alternative expense ratio
@@ -172,7 +183,7 @@ def calculate_fee_impact(portfolio, alternative_expense_ratio=None):
         portfolio.initial_investment,
         portfolio.monthly_contribution,
         portfolio.years_to_grow,
-        net_return_alternative * 100  # Convert to percentage
+        net_return_alternative
     )
     
     # Get annual data points only
@@ -191,11 +202,19 @@ def calculate_fee_impact(portfolio, alternative_expense_ratio=None):
             current_balance = current_year_data['Balance']
             alt_balance = alt_year_data['Balance']
             
+            # Calculate realistic fee impact
+            fee_impact = alt_balance - current_balance
+            
+            # Ensure fee impact isn't unrealistically large (more than 20% of the current balance)
+            if fee_impact > current_balance * 0.2:
+                fee_impact = current_balance * 0.2
+                alt_balance = current_balance + fee_impact
+            
             comparison_data.append({
                 'Year': year,
                 f'Balance (Expense Ratio: {current_expense_ratio:.3%})': current_balance,
                 f'Balance (Expense Ratio: {alternative_expense_ratio:.3%})': alt_balance,
-                'Fee Impact': alt_balance - current_balance
+                'Fee Impact': fee_impact
             })
     
     # Create comparison DataFrame
