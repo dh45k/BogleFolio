@@ -48,12 +48,23 @@ with col4:
 
 st.markdown("---")
 
-# Sidebar for app navigation
-st.sidebar.title("Navigation")
+# Hide default Streamlit menu and footer
+hide_menu_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        </style>
+        """
+st.markdown(hide_menu_style, unsafe_allow_html=True)
+
+# Custom navigation sidebar without the default pages
+st.sidebar.markdown("<h2>Navigation</h2>", unsafe_allow_html=True)
+page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency"]
 page = st.sidebar.radio(
-    "Select a page:",
-    ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency"],
-    index=["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency"].index(st.session_state.page)
+    "Select page:",
+    page_options,
+    index=page_options.index(st.session_state.page),
+    label_visibility="collapsed"
 )
 # Update page in session state when changed via sidebar
 if page != st.session_state.page:
@@ -163,16 +174,16 @@ if uploaded_file is not None:
 
 # Render selected page
 if page == "Portfolio Allocation":
-    from pages.allocation import show_allocation_page
+    from custom_pages.pages.allocation import show_allocation_page
     show_allocation_page(st.session_state.portfolio)
 elif page == "Compound Growth":
-    from pages.compound_growth import show_compound_growth_page
+    from custom_pages.pages.compound_growth import show_compound_growth_page
     show_compound_growth_page(st.session_state.portfolio)
 elif page == "Fund Comparison":
-    from pages.fund_comparison import show_fund_comparison_page
+    from custom_pages.pages.fund_comparison import show_fund_comparison_page
     show_fund_comparison_page()
 elif page == "Tax Efficiency":
-    from pages.tax_efficiency import show_tax_efficiency_page
+    from custom_pages.pages.tax_efficiency import show_tax_efficiency_page
     show_tax_efficiency_page(st.session_state.portfolio)
 
 # Footer
