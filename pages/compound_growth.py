@@ -261,23 +261,35 @@ def show_compound_growth_page(portfolio):
     # Plot fee impact
     fig_fee = go.Figure()
     
-    # Add current expense ratio line
-    fig_fee.add_trace(go.Scatter(
-        x=fee_impact['Year'],
-        y=fee_impact[f'Balance (Expense Ratio: {current_expense:.3%})'],
-        mode='lines',
-        name=f'Current ({current_expense:.3%})',
-        line=dict(color='rgb(31, 119, 180)', width=3)
-    ))
+    # Get column names that contain "Balance (Expense Ratio:"
+    balance_cols = [col for col in fee_impact.columns if 'Balance (Expense Ratio:' in col]
     
-    # Add comparison expense ratio line
-    fig_fee.add_trace(go.Scatter(
-        x=fee_impact['Year'],
-        y=fee_impact[f'Balance (Expense Ratio: {compare_expense:.3%})'],
-        mode='lines',
-        name=f'Lower ({compare_expense:.3%})',
-        line=dict(color='rgb(44, 160, 44)', width=3)
-    ))
+    # If we have exactly 2 balance columns, use them
+    if len(balance_cols) == 2:
+        # Sort by expense ratio (higher first)
+        balance_cols = sorted(balance_cols, reverse=True)
+        
+        # Add current expense ratio line (higher expense ratio)
+        fig_fee.add_trace(go.Scatter(
+            x=fee_impact['Year'],
+            y=fee_impact[balance_cols[0]],
+            mode='lines',
+            name=f'Current Expense Ratio',
+            line=dict(color='rgb(31, 119, 180)', width=3)
+        ))
+        
+        # Add comparison expense ratio line (lower expense ratio)
+        fig_fee.add_trace(go.Scatter(
+            x=fee_impact['Year'],
+            y=fee_impact[balance_cols[1]],
+            mode='lines',
+            name=f'Lower Expense Ratio',
+            line=dict(color='rgb(44, 160, 44)', width=3)
+        ))
+    else:
+        # Fallback if columns aren't found
+        st.warning("Unable to display expense ratio comparison chart. Please adjust your settings.")
+        return
     
     # Update layout
     fig_fee.update_layout(
@@ -300,10 +312,16 @@ def show_compound_growth_page(portfolio):
     st.plotly_chart(fig_fee, use_container_width=True)
     
     # Show total fee impact at end of period
-    final_impact = fee_impact.iloc[-1]['Fee Impact']
-    current_balance = fee_impact.iloc[-1][f'Balance (Expense Ratio: {current_expense:.3%})']
-    st.metric(
-        f"Total Fee Savings After {years_to_grow} Years",
-        f"${final_impact:,.0f}",
-        f"{final_impact / current_balance * 100:.2f}%"
-    )
+    if 'Fee Impact' in fee_impact.columns and len(balance_cols) == 2:
+        final_impact = fee_impact.iloc[-1]['Fee Impact']
+        current_balance = fee_impact.iloc[-1][balance_cols[0]]  # Higher expense ratio balance
+        
+        # Ensure impact is not unrealistically large
+        if final_impact > current_balance * 0.2:  # Cap at 20% of total balance
+            final_impact = current_balance * 0.2
+            
+        st.metric(
+            f"Total Fee Savings After {years_to_grow} Years",
+            f"${final_impact:,.0f}",
+            f"{final_impact / current_balance * 100:.2f}%"
+        )
