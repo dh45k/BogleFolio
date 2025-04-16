@@ -63,8 +63,8 @@ def show_monte_carlo_page(portfolio):
         
         # Default volatility based on portfolio allocation
         # This is a simplified estimate - stocks ~15-20% volatility, bonds ~5-8%
-        stock_allocation = (portfolio.us_stock + portfolio.international_stock) / 100
-        bond_allocation = portfolio.bond / 100
+        stock_allocation = (portfolio.us_stock_allocation + portfolio.international_stock_allocation) / 100
+        bond_allocation = portfolio.bond_allocation / 100
         estimated_volatility = (stock_allocation * 0.18) + (bond_allocation * 0.06)
         
         volatility = st.slider(
