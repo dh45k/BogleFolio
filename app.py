@@ -20,16 +20,45 @@ if 'portfolios' not in st.session_state:
 
 if 'current_portfolio_name' not in st.session_state:
     st.session_state.current_portfolio_name = "Default Portfolio"
+    
+if 'page' not in st.session_state:
+    st.session_state.page = "Portfolio Allocation"
 
 # Main app title
 st.title("Boglehead 3-Fund Portfolio Optimizer")
+
+# Main page navigation tabs
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    if st.button("Portfolio Allocation", use_container_width=True):
+        st.session_state['page'] = "Portfolio Allocation"
+        st.rerun()
+with col2:
+    if st.button("Compound Growth", use_container_width=True):
+        st.session_state['page'] = "Compound Growth"
+        st.rerun()
+with col3:
+    if st.button("Fund Comparison", use_container_width=True):
+        st.session_state['page'] = "Fund Comparison"
+        st.rerun()
+with col4:
+    if st.button("Tax Efficiency", use_container_width=True):
+        st.session_state['page'] = "Tax Efficiency"
+        st.rerun()
+
+st.markdown("---")
 
 # Sidebar for app navigation
 st.sidebar.title("Navigation")
 page = st.sidebar.radio(
     "Select a page:",
-    ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency"]
+    ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency"],
+    index=["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency"].index(st.session_state.page)
 )
+# Update page in session state when changed via sidebar
+if page != st.session_state.page:
+    st.session_state.page = page
+    st.rerun()
 
 # Portfolio management in sidebar
 st.sidebar.markdown("---")
@@ -37,13 +66,30 @@ st.sidebar.subheader("Portfolio Management")
 
 # Save portfolio
 portfolio_name = st.sidebar.text_input("Portfolio Name:", value=st.session_state.current_portfolio_name)
+
+# Storage options
+storage_option = st.sidebar.radio("Storage:", ["Local", "Database"], horizontal=True)
+
 if st.sidebar.button("Save Portfolio"):
+    # Always save to local memory
     st.session_state.portfolios[portfolio_name] = st.session_state.portfolio.to_dict()
     st.session_state.current_portfolio_name = portfolio_name
-    st.sidebar.success(f"Portfolio '{portfolio_name}' saved!")
+    
+    # If database option selected, also save to database
+    if storage_option == "Database":
+        try:
+            from utils.db import save_portfolio
+            portfolio_db = save_portfolio(st.session_state.portfolio)
+            st.sidebar.success(f"Portfolio '{portfolio_name}' saved to database (ID: {portfolio_db.id})!")
+        except Exception as e:
+            st.sidebar.error(f"Error saving to database: {str(e)}")
+    else:
+        st.sidebar.success(f"Portfolio '{portfolio_name}' saved locally!")
 
 # Load portfolio
-if st.session_state.portfolios:
+load_source = st.sidebar.radio("Load from:", ["Local", "Database"], horizontal=True)
+
+if load_source == "Local" and st.session_state.portfolios:
     portfolio_to_load = st.sidebar.selectbox(
         "Select Portfolio to Load:", 
         options=list(st.session_state.portfolios.keys()),
@@ -51,10 +97,42 @@ if st.session_state.portfolios:
             if st.session_state.current_portfolio_name in st.session_state.portfolios else 0
     )
     
-    if st.sidebar.button("Load Portfolio"):
+    if st.sidebar.button("Load Local Portfolio"):
         st.session_state.portfolio = Portfolio.from_dict(st.session_state.portfolios[portfolio_to_load])
         st.session_state.current_portfolio_name = portfolio_to_load
-        st.sidebar.success(f"Portfolio '{portfolio_to_load}' loaded!")
+        st.sidebar.success(f"Portfolio '{portfolio_to_load}' loaded from local storage!")
+        
+elif load_source == "Database":
+    try:
+        from utils.db import get_user_portfolios, load_portfolio
+        
+        # Get list of portfolios from database
+        db_portfolios = get_user_portfolios()
+        
+        if db_portfolios:
+            portfolio_options = [f"{p['name']} (ID: {p['id']})" for p in db_portfolios]
+            selected_db_portfolio = st.sidebar.selectbox(
+                "Select Database Portfolio:",
+                options=portfolio_options
+            )
+            
+            # Extract the ID from the selection
+            portfolio_id = int(selected_db_portfolio.split("(ID: ")[1].split(")")[0])
+            
+            if st.sidebar.button("Load DB Portfolio"):
+                # Load portfolio from database
+                portfolio_data = load_portfolio(portfolio_id)
+                if portfolio_data:
+                    # Convert to Portfolio object
+                    st.session_state.portfolio = Portfolio.from_dict(portfolio_data)
+                    st.session_state.current_portfolio_name = portfolio_data.get('name', f"DB Portfolio {portfolio_id}")
+                    st.sidebar.success(f"Portfolio loaded from database successfully!")
+                else:
+                    st.sidebar.error("Failed to load portfolio from database.")
+        else:
+            st.sidebar.info("No portfolios found in the database. Save a portfolio first.")
+    except Exception as e:
+        st.sidebar.error(f"Error accessing database: {str(e)}")
 
 # Export/Import portfolios
 st.sidebar.markdown("---")
