@@ -28,7 +28,7 @@ if 'page' not in st.session_state:
 st.title("Boglehead 3-Fund Portfolio Optimizer")
 
 # Main page navigation tabs
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4, col5 = st.columns(5)
 with col1:
     if st.button("Portfolio Allocation", use_container_width=True):
         st.session_state['page'] = "Portfolio Allocation"
@@ -45,6 +45,10 @@ with col4:
     if st.button("Tax Efficiency", use_container_width=True):
         st.session_state['page'] = "Tax Efficiency"
         st.rerun()
+with col5:
+    if st.button("Monte Carlo", use_container_width=True):
+        st.session_state['page'] = "Monte Carlo Simulation"
+        st.rerun()
 
 st.markdown("---")
 
@@ -59,11 +63,11 @@ st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 # Custom navigation sidebar without the default pages
 st.sidebar.markdown("<h2>Navigation</h2>", unsafe_allow_html=True)
-page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency"]
+page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation"]
 page = st.sidebar.radio(
     "Select page:",
     page_options,
-    index=page_options.index(st.session_state.page),
+    index=page_options.index(st.session_state.page) if st.session_state.page in page_options else 0,
     label_visibility="collapsed"
 )
 # Update page in session state when changed via sidebar
@@ -185,17 +189,22 @@ elif page == "Fund Comparison":
 elif page == "Tax Efficiency":
     from custom_pages.pages.tax_efficiency import show_tax_efficiency_page
     show_tax_efficiency_page(st.session_state.portfolio)
+elif page == "Monte Carlo Simulation":
+    from custom_pages.pages.monte_carlo import show_monte_carlo_page
+    show_monte_carlo_page(st.session_state.portfolio)
 
 # Footer
 st.markdown("---")
 st.markdown("### About This Tool")
 st.markdown("""
 This tool is designed for Bogleheads to optimize their 3-fund portfolios. It helps visualize asset allocation, 
-project growth over time, compare fund expenses, and optimize tax efficiency across different account types.
+project growth over time, compare fund expenses, optimize tax efficiency across different account types,
+and analyze retirement readiness through Monte Carlo simulations.
 
 Built following Bogleheads investment principles:
 - Low-cost index funds
 - Broad diversification
 - Long-term investment horizon
 - Tax-efficient fund placement
+- Data-driven retirement planning
 """)
