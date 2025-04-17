@@ -227,3 +227,11 @@ def show_allocation_page(portfolio):
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("Enter account values to see distribution.")
+    
+    # Add Jack Bogle quotes
+    st.divider()
+    st.markdown("""
+    > *"Never underrate the importance of asset allocation."* - Jack Bogle
+    
+    > *"Don't look for the needle in the haystack. Just buy the haystack."* - Jack Bogle
+    """, unsafe_allow_html=True)

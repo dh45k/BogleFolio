@@ -325,3 +325,9 @@ def show_compound_growth_page(portfolio):
             f"${final_impact:,.0f}",
             f"{final_impact / current_balance * 100:.2f}%"
         )
+        
+    # Add Jack Bogle quote
+    st.divider()
+    st.markdown("""
+    > *"Investing is a virtuous habit best started as early as possible."* - Jack Bogle
+    """, unsafe_allow_html=True)

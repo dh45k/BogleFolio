@@ -123,4 +123,6 @@ def show_tax_efficiency_page(portfolio):
     - **Required Minimum Distributions (RMDs)** may affect long-term tax planning
     
     By following these principles, you can significantly reduce the tax drag on your portfolio and improve your after-tax returns.
+    
+    > *"Invest as efficiently as you can, using low-cost funds that can be bought and held for a lifetime."* - Jack Bogle
     """)

@@ -213,4 +213,8 @@ def show_fund_comparison_page():
     - Consider expense ratios alongside other factors like tracking error and tax efficiency.
     
     Following the Bogleheads philosophy, keeping costs low is one of the most reliable ways to improve your investment returns over time.
+    
+    > *"Time is your friend; impulse is your enemy."* - Jack Bogle
+    
+    > *"Stay the course!"* - Jack Bogle
     """)

@@ -297,6 +297,8 @@ def show_monte_carlo_page(portfolio):
         ---
         **Disclaimer:** Monte Carlo simulations are based on historical market behavior and assumptions about future returns.
         Actual results may vary significantly. This tool is for educational purposes only and should not be considered financial advice.
+        
+        > *"Wise investors won't try to outsmart the market."* - Jack Bogle
         """)
     else:
         st.info("Click 'Run Monte Carlo Simulation' to see retirement projections.")
