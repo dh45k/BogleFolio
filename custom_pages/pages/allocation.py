@@ -235,3 +235,29 @@ def show_allocation_page(portfolio):
     
     > *"Don't look for the needle in the haystack. Just buy the haystack."* - Jack Bogle
     """, unsafe_allow_html=True)
+    
+    # Add Bogleheads information and resources
+    st.divider()
+    st.subheader("Bogleheads")
+    
+    st.markdown("""
+    Bogleheads are passive investors who follow Jack Bogle's simple but powerful message to diversify with low-cost index funds and let compounding grow wealth. Jack founded Vanguard and pioneered indexed mutual funds. His work has since inspired others to get the most out of their long-term investments. Active managers want your money - our advice: keep it! How? Investing in broad-market low-cost indexes, diversified between equities and fixed income. Buy, hold, pay low fees, and stay the course!
+    """)
+    
+    st.subheader("Bogleheads Community Subreddit and Blog")
+    st.markdown("""
+    [Bogleheads Subreddit](https://www.reddit.com/r/Bogleheads/)  
+    [Bogleheads.org](https://www.bogleheads.org/)
+    """)
+    
+    st.subheader("Jack Bogle's Words in YouTube Videos")
+    st.markdown("""
+    - [John Bogle: Important Rule For Investors](https://youtube.com/shorts/2zlrR6lXDJ0?si=HAephkTl49npWM-n)
+    - [WARREN BUFFETT JACK BOGLE](https://youtube.com/shorts/8v3jBQSod_A?si=KjGLq5kv8i3sJ8ks)
+    - [John Bogle: How to Get Rich Investing?](https://youtube.com/shorts/qyLoTOhMjSM?si=ROPoR3fGpN2-Yb_k)
+    - [Jack BOGLE: Invest For A LIFETIME #jackbogle](https://youtube.com/shorts/9ZPcVeS9LOE?si=QECz6Hs8stZq-cTX)
+    - [Jack Bogle on how to handle market declines](https://youtube.com/shorts/n4N45Dk5c9M?si=KE2SIatgq59cu_2w)
+    - [Jack Bogle's Money Advice](https://youtube.com/shorts/woOxKtYX-2I?si=KAf5EJvq4Y1IOaIR)
+    - [Don't time the market. "Jack Bogle: Stay The Course."](https://youtube.com/shorts/zaEBrWCJyPo?si=bfaa4S5CJUnAkXW2)
+    - [How to Have the Perfect Portfolio in Investment - John Bogle's view](https://youtu.be/PN6uKE_vbWs?si=UXqb3WWk4jXcxUwB)
+    """)
