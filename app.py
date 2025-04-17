@@ -207,4 +207,6 @@ Built following Bogleheads investment principles:
 - Long-term investment horizon
 - Tax-efficient fund placement
 - Data-driven retirement planning
+
+**DISCLAIMER:** I am not financial, and I am not a tax adviser. This tool and content are for educational and entertainment purposes only. I am only sharing my personal opinion. Please seek professional help when needed.
 """)
