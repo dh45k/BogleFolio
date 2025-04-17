@@ -179,22 +179,13 @@ def show_fund_comparison_page():
             
             st.plotly_chart(fig_cost, use_container_width=True)
             
-            # Calculate and display final cost difference
+            # Calculate final cost difference but don't display the problematic text
             if len(selected_funds) > 1:
                 final_costs = {}
                 
                 for _, fund in funds_to_compare.iterrows():
                     final_cost = investment_amount * fund['Expense Ratio'] * comparison_years
                     final_costs[fund['Ticker']] = final_cost
-                
-                # Find lowest and highest cost funds
-                lowest_fund = min(final_costs.items(), key=lambda x: x[1])
-                highest_fund = max(final_costs.items(), key=lambda x: x[1])
-                
-                # Calculate difference
-                difference = highest_fund[1] - lowest_fund[1]
-                
-                st.info(f"After {comparison_years} years, using {lowest_fund[0]} instead of {highest_fund[0]} would save you ${difference:,.2f} in fees on a ${investment_amount:,} investment.")
     else:
         st.warning("No funds match the selected filters. Please adjust your criteria.")
     
@@ -211,15 +202,15 @@ def show_fund_comparison_page():
     
     Even small differences in expense ratios can have a significant impact on your investment returns over time due to compounding:
     
-    - A 0.1% difference in expense ratio on a $100,000 investment over 30 years could mean approximately $30,000 in lost returns
-    - Lower expense ratios mean more of your money stays invested and working for you
+    - A 0.1% difference in expense ratio on a $100,000 investment over 30 years could mean approximately $30,000 in lost returns.
+    - Lower expense ratios mean more of your money stays invested and working for you.
     
     #### Expense Ratio Considerations
     
-    - **Index funds** typically have much lower expense ratios than actively managed funds
-    - **ETFs** often have lower expense ratios than mutual funds with similar investment objectives
-    - Some brokerages offer proprietary funds with zero or near-zero expense ratios
-    - Consider expense ratios alongside other factors like tracking error and tax efficiency
+    - **Index funds** typically have much lower expense ratios than actively managed funds.
+    - **ETFs** often have lower expense ratios than mutual funds with similar investment objectives.
+    - Some brokerages offer proprietary funds with zero or near-zero expense ratios.
+    - Consider expense ratios alongside other factors like tracking error and tax efficiency.
     
     Following the Bogleheads philosophy, keeping costs low is one of the most reliable ways to improve your investment returns over time.
     """)
