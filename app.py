@@ -78,7 +78,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 # Add a subtle divider
 st.markdown('<hr style="height:2px;border:none;color:#f0f0f0;background-color:#f0f0f0;margin-bottom:24px;">', unsafe_allow_html=True)
 
-# Hide default Streamlit menu, footer, and completely hide the sidebar
+# Hide default Streamlit menu, footer, completely hide the sidebar, and hamburger menu
 hide_elements_style = """
         <style>
         #MainMenu {visibility: hidden;}
@@ -90,6 +90,14 @@ hide_elements_style = """
             padding-left: 2rem;
             padding-right: 2rem;
             max-width: 1200px;
+        }
+        /* Hide hamburger menu */
+        header button[data-testid="baseButton-headerNoPadding"] {
+            display: none !important;
+        }
+        /* Hide the deploy button in header menu */
+        header div[data-testid="stToolbar"] {
+            display: none !important;
         }
         </style>
         """
