@@ -32,13 +32,31 @@ def show_allocation_page(portfolio):
         init_synced_value("intl_stocks", portfolio.international_stock_allocation)
         init_synced_value("bonds", portfolio.bond_allocation)
         
-        # Create callbacks to sync the values
-        def update_value(key):
+        # Initialize _last_used_widget if not present
+        if "_last_used_widget" not in st.session_state:
+            st.session_state["_last_used_widget"] = ""
+        
+        # Function to track slider usage and update values
+        def on_slider_change(key):
             def callback():
-                # Update the synced value whenever either input changes
-                input_value = st.session_state.get(f"{key}_input", 0)
-                slider_value = st.session_state.get(f"{key}_slider", 0)
-                # Use the most recently changed value
+                # Mark this slider as the last used widget
+                st.session_state["_last_used_widget"] = f"{key}_slider"
+                
+                # Update the number input to match the slider
+                slider_value = st.session_state[f"{key}_slider"]
+                st.session_state[f"{key}_input"] = slider_value
+                st.session_state[f"{key}_value"] = slider_value
+            return callback
+        
+        # Function to track number input usage and update values
+        def on_input_change(key):
+            def callback():
+                # Mark this input as the last used widget
+                st.session_state["_last_used_widget"] = f"{key}_input"
+                
+                # Update the slider to match the number input
+                input_value = st.session_state[f"{key}_input"]
+                st.session_state[f"{key}_slider"] = input_value
                 st.session_state[f"{key}_value"] = input_value
             return callback
         
@@ -59,7 +77,7 @@ def show_allocation_page(portfolio):
                     value=current_value,
                     step=1,
                     key=f"{key}_slider",
-                    on_change=update_value(key),
+                    on_change=on_slider_change(key),
                     label_visibility="collapsed"
                 )
             
@@ -70,7 +88,7 @@ def show_allocation_page(portfolio):
                     value=current_value,
                     step=1,
                     key=f"{key}_input",
-                    on_change=update_value(key),
+                    on_change=on_input_change(key),
                     label_visibility="collapsed"
                 )
             
