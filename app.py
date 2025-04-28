@@ -51,7 +51,7 @@ with col_title:
 
 # Create tabs for navigation with custom styling
 st.markdown('<div class="nav-container">', unsafe_allow_html=True)
-col1, col2, col3, col4, col5, col6 = st.columns(6)
+col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 
 # CSS for navigation buttons with icons
 nav_styles = """
@@ -124,6 +124,7 @@ nav_button("Fund Comparison", "Fund Comparison", col3, "assets/fund_comparison.s
 nav_button("Tax Efficiency", "Tax Efficiency", col4, "assets/tax_efficiency.svg")
 nav_button("Monte Carlo", "Monte Carlo Simulation", col5, "assets/monte_carlo.svg")
 nav_button("Financial Literacy", "Financial Literacy", col6, "assets/financial_literacy.svg")
+nav_button("AI Assistant", "AI Assistant", col7, "assets/chatbot.svg")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -208,7 +209,7 @@ st.markdown(hide_elements_style, unsafe_allow_html=True)
 
 # Hide sidebar navigation - now only using top navigation
 # But still keep track of the current page in session state
-page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation", "Financial Literacy"]
+page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation", "Financial Literacy", "AI Assistant"]
 page = st.session_state.page
 
 # Portfolio management in sidebar with improved styling
@@ -350,6 +351,9 @@ elif page == "Monte Carlo Simulation":
 elif page == "Financial Literacy":
     from custom_pages.pages.financial_literacy import show_financial_literacy_page
     show_financial_literacy_page()
+elif page == "AI Assistant":
+    from custom_pages.pages.chatbot import show_chatbot_page
+    show_chatbot_page()
 
 # Footer with styled content
 st.markdown('<div class="footer-container">', unsafe_allow_html=True)
