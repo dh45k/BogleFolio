@@ -168,41 +168,39 @@ class Portfolio:
             int: The portfolio ID in the database
         """
         try:
-            # Convert portfolio to database format
+            # Create a portfolio-like object with the structure expected by save_portfolio
             portfolio_data = {
                 'name': self.name,
                 'initial_investment': self.initial_investment,
                 'monthly_contribution': self.monthly_contribution,
                 'years_to_grow': self.years_to_grow,
-                'us_stock': self.us_stock_allocation,
-                'international_stock': self.international_stock_allocation,
-                'bond': self.bond_allocation,
-                'funds': {
-                    'US Stock': {
-                        'ticker': self.us_stock_fund,
-                        'name': self.get_fund_name(self.us_stock_fund),
-                        'expense_ratio': self.get_fund_expense_ratio(self.us_stock_fund)
-                    },
-                    'International Stock': {
-                        'ticker': self.international_stock_fund,
-                        'name': self.get_fund_name(self.international_stock_fund),
-                        'expense_ratio': self.get_fund_expense_ratio(self.international_stock_fund)
-                    },
-                    'Bond': {
-                        'ticker': self.bond_fund,
-                        'name': self.get_fund_name(self.bond_fund),
-                        'expense_ratio': self.get_fund_expense_ratio(self.bond_fund)
-                    }
-                }
+                'us_stock_allocation': self.us_stock_allocation,
+                'international_stock_allocation': self.international_stock_allocation,
+                'bond_allocation': self.bond_allocation,
+                'us_stock_fund': self.us_stock_fund,
+                'international_stock_fund': self.international_stock_fund,
+                'bond_fund': self.bond_fund,
+                'account_values': self.account_values,
+                'expected_return_us': self.expected_return_us,
+                'expected_return_intl': self.expected_return_intl,
+                'expected_return_bond': self.expected_return_bond
             }
             
+            # Create a temporary object that has the to_dict method
+            class TempPortfolio:
+                def to_dict(self):
+                    return portfolio_data
+            
+            temp_portfolio = TempPortfolio()
+            
             # Save to the database
-            db_portfolio = db.save_portfolio(portfolio_data, user_id)
+            db_portfolio = db.save_portfolio(temp_portfolio, user_id)
             
             # Update our ID
             if db_portfolio:
                 self.id = db_portfolio.id
                 return self.id
+            return None
         except Exception as e:
             print(f"Error saving portfolio to database: {e}")
             return None

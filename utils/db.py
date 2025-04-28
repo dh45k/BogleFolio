@@ -144,7 +144,7 @@ def save_portfolio(portfolio_obj, user_id=1):
         # Convert portfolio object to database model
         portfolio_data = portfolio_obj.to_dict()
         
-        # Create portfolio
+        # Create portfolio with proper field mapping
         db_portfolio = Portfolio(
             name=portfolio_data.get('name', 'My Portfolio'),
             user_id=user_id,
@@ -158,25 +158,49 @@ def save_portfolio(portfolio_obj, user_id=1):
         # Create allocation
         allocation = Allocation(
             portfolio_id=db_portfolio.id,
-            us_stock=portfolio_data.get('us_stock', 60),
-            international_stock=portfolio_data.get('international_stock', 30),
-            bond=portfolio_data.get('bond', 10)
+            us_stock=portfolio_data.get('us_stock_allocation', 60),
+            international_stock=portfolio_data.get('international_stock_allocation', 30),
+            bond=portfolio_data.get('bond_allocation', 10)
         )
         session.add(allocation)
         
         # Add fund selections
-        fund_data = portfolio_data.get('funds', {})
-        for category, fund_info in fund_data.items():
-            fund = FundSelection(
-                portfolio_id=db_portfolio.id,
-                category=category,
-                ticker=fund_info.get('ticker', ''),
-                name=fund_info.get('name', ''),
-                expense_ratio=fund_info.get('expense_ratio', 0)
-            )
-            session.add(fund)
+        # Create fund selection for US Stock
+        us_stock_fund = FundSelection(
+            portfolio_id=db_portfolio.id,
+            category='US Stock',
+            ticker=portfolio_data.get('us_stock_fund', 'VTI'),
+            name='',  # Will be filled later
+            expense_ratio=0.0  # Will be filled later
+        )
+        session.add(us_stock_fund)
         
+        # Create fund selection for International Stock
+        intl_stock_fund = FundSelection(
+            portfolio_id=db_portfolio.id,
+            category='International Stock',
+            ticker=portfolio_data.get('international_stock_fund', 'VXUS'),
+            name='',  # Will be filled later
+            expense_ratio=0.0  # Will be filled later
+        )
+        session.add(intl_stock_fund)
+        
+        # Create fund selection for Bond
+        bond_fund = FundSelection(
+            portfolio_id=db_portfolio.id,
+            category='Bond',
+            ticker=portfolio_data.get('bond_fund', 'BND'),
+            name='',  # Will be filled later
+            expense_ratio=0.0  # Will be filled later
+        )
+        session.add(bond_fund)
+        
+        # Commit changes to database
         session.commit()
+        
+        # Detach the portfolio object from the session to avoid errors
+        session.expunge(db_portfolio)
+        
         return db_portfolio
         
     except Exception as e:
