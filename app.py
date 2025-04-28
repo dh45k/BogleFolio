@@ -244,28 +244,13 @@ with col1:
         and analyze retirement readiness through Monte Carlo simulations.</p>
         
         <h4 style="color:#1E5631; margin:20px 0 15px 0; font-size:1.1rem;">Built following Bogleheads investment principles:</h4>
-        <ul style="list-style-type:none; padding-left:0; margin-bottom:20px;">
-            <li style="margin-bottom:8px; display:flex; align-items:flex-start;">
-                <span style="color:#1E5631; margin-right:8px;">•</span>
-                <span><strong>Low-cost index funds</strong> — Minimize expenses to maximize returns</span>
-            </li>
-            <li style="margin-bottom:8px; display:flex; align-items:flex-start;">
-                <span style="color:#1E5631; margin-right:8px;">•</span>
-                <span><strong>Broad diversification</strong> — Invest in the entire market</span>
-            </li>
-            <li style="margin-bottom:8px; display:flex; align-items:flex-start;">
-                <span style="color:#1E5631; margin-right:8px;">•</span>
-                <span><strong>Long-term investment horizon</strong> — Stay the course</span>
-            </li>
-            <li style="margin-bottom:8px; display:flex; align-items:flex-start;">
-                <span style="color:#1E5631; margin-right:8px;">•</span>
-                <span><strong>Tax-efficient fund placement</strong> — Optimize across account types</span>
-            </li>
-            <li style="margin-bottom:8px; display:flex; align-items:flex-start;">
-                <span style="color:#1E5631; margin-right:8px;">•</span>
-                <span><strong>Data-driven retirement planning</strong> — Make informed decisions</span>
-            </li>
-        </ul>
+        <div style="margin-bottom: 20px;">
+            <p style="margin-bottom:10px;"><span style="color:#1E5631; font-weight:600; margin-right:8px;">•</span><strong>Low-cost index funds</strong> — Minimize expenses to maximize returns</p>
+            <p style="margin-bottom:10px;"><span style="color:#1E5631; font-weight:600; margin-right:8px;">•</span><strong>Broad diversification</strong> — Invest in the entire market</p>
+            <p style="margin-bottom:10px;"><span style="color:#1E5631; font-weight:600; margin-right:8px;">•</span><strong>Long-term investment horizon</strong> — Stay the course</p>
+            <p style="margin-bottom:10px;"><span style="color:#1E5631; font-weight:600; margin-right:8px;">•</span><strong>Tax-efficient fund placement</strong> — Optimize across account types</p>
+            <p style="margin-bottom:10px;"><span style="color:#1E5631; font-weight:600; margin-right:8px;">•</span><strong>Data-driven retirement planning</strong> — Make informed decisions</p>
+        </div>
     </div>
     ''', unsafe_allow_html=True)
 
