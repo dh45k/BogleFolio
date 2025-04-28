@@ -254,14 +254,6 @@ with col2:
             <p style="margin-bottom:10px; font-size:0.9rem; line-height:1.5;">This tool and content are for educational and information purposes only. 
             The information provided is not financial or tax advice. Please consult with qualified professionals 
             before making investment decisions.</p>
-            
-            <p style="font-size:0.9rem; line-height:1.5;">All recommendations are based on the Bogleheads investment philosophy of passive, 
-            low-cost, diversified investing. Past performance is not indicative of future results.</p>
-        </div>
-        
-        <div style="text-align:center; margin-top:30px; color:#666; font-size:0.9rem;">
-            <p style="margin-bottom:5px;">Version 1.0 | Last Updated: April 2025</p>
-            <p>Created with ♥ for the Bogleheads community</p>
         </div>
     </div>
     ''', unsafe_allow_html=True)
