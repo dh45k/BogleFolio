@@ -49,34 +49,13 @@ with col_title:
     st.markdown('<h1 class="header-title">Boglehead 3-Fund Portfolio Optimizer</h1>', unsafe_allow_html=True)
     st.markdown('<p class="header-subtitle">Simplify investing with diversified, low-cost index funds</p>', unsafe_allow_html=True)
 
-# Create tabs for navigation with custom styling - sticky at the top
-st.markdown('<div class="nav-container sticky-nav">', unsafe_allow_html=True)
+# Create tabs for navigation with custom styling
+st.markdown('<div class="nav-container">', unsafe_allow_html=True)
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
 # CSS for navigation buttons with icons
 nav_styles = """
 <style>
-    /* Sticky navigation container */
-    .sticky-nav {
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        background-color: #fff;
-        padding: 10px 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin: 0 -2rem;  /* Compensate for container padding */
-        padding: 10px 2rem;  /* Add padding to match container */
-        margin-bottom: 20px;
-        border-bottom: 1px solid #eee;
-    }
-    
-    /* Space above sticky nav to prevent content from being hidden */
-    .main .block-container::before {
-        content: "";
-        display: block;
-        height: 3rem;
-    }
-
     .nav-container button {
         background-color: #f8f9fa;
         color: #333;
@@ -113,11 +92,6 @@ nav_styles = """
     .nav-container button:hover svg path {
         stroke: #1E5631;
     }
-    
-    /* Add padding to the top of the content to prevent it from being hidden behind sticky nav */
-    .main .block-container {
-        padding-top: 20px;
-    }
 </style>
 """
 st.markdown(nav_styles, unsafe_allow_html=True)
@@ -127,79 +101,20 @@ def nav_button(label, page_name, container, icon_path=None):
     active_class = "active" if st.session_state.page == page_name else ""
     
     with container:
-        # Determine the button style based on whether it's active
-        button_style = """
-            background-color: #1E5631;
-            color: white;
-            border: 1px solid #1E5631;
-        """ if st.session_state.page == page_name else ""
-        
         # Create a layout for icon and text
         if icon_path:
-            # Create a custom HTML button with icon and text
-            icon_svg = render_svg(icon_path)
-            button_id = f"nav_btn_{page_name.replace(' ', '_')}"
+            col_icon, col_text = st.columns([1, 4])
+            with col_icon:
+                st.markdown(f'<div style="display: flex; justify-content: center; align-items: center; height: 100%;">{render_svg(icon_path)}</div>', unsafe_allow_html=True)
             
-            # Apply active styling directly
-            button_html = f"""
-            <button 
-                id="{button_id}" 
-                style="
-                    display: flex;
-                    width: 100%;
-                    align-items: center;
-                    padding: 8px 12px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-weight: 500;
-                    transition: all 0.2s;
-                    border: 1px solid #eee;
-                    background-color: {('#1E5631' if st.session_state.page == page_name else '#f8f9fa')};
-                    color: {('white' if st.session_state.page == page_name else '#333')};
-                "
-                onclick="
-                    window.location.href = window.location.pathname + '?page={page_name}';
-                "
-            >
-                <div style="width: 24px; margin-right: 8px;">{icon_svg}</div>
-                <div style="flex-grow: 1; text-align: left;">{label}</div>
-            </button>
-            """
-            
-            # Add custom script to handle the click (this is needed for button functionality)
-            st.markdown(f"""
-            <div>{button_html}</div>
-            <script>
-                document.getElementById("{button_id}").addEventListener("click", function() {{
-                    // Submit a form to trigger page reload with new parameter
-                    const form = document.createElement('form');
-                    form.method = 'get';
-                    form.action = window.location.pathname;
-                    
-                    const pageInput = document.createElement('input');
-                    pageInput.type = 'hidden';
-                    pageInput.name = 'page';
-                    pageInput.value = '{page_name}';
-                    form.appendChild(pageInput);
-                    
-                    document.body.appendChild(form);
-                    form.submit();
-                }});
-            </script>
-            """, unsafe_allow_html=True)
-            
-            # Also add an invisible button for Streamlit's native navigation
-            # This ensures the session state is properly updated even if JavaScript fails
-            st.markdown(f'<div style="display:none">', unsafe_allow_html=True)
-            if st.button("", key=f"nav_{page_name}", help=f"Navigate to {label} page"):
-                st.session_state['page'] = page_name
-                st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-                
+            with col_text:
+                if st.button(label, key=f"nav_{page_name}", use_container_width=True, 
+                        help=f"Navigate to {label} page"):
+                    st.session_state['page'] = page_name
+                    st.rerun()
         else:
-            # Fallback to regular button if no icon
             if st.button(label, key=f"nav_{page_name}", use_container_width=True, 
-                    help=f"Navigate to {label} page"):
+                        help=f"Navigate to {label} page"):
                 st.session_state['page'] = page_name
                 st.rerun()
 
