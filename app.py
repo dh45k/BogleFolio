@@ -57,21 +57,40 @@ with col_title:
 st.markdown('<div class="nav-container">', unsafe_allow_html=True)
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
-# Define active class for current page
-def nav_button(label, page_name, container):
-    active_class = "active" if st.session_state.page == page_name else ""
-    with container:
-        if st.button(label, key=f"nav_{page_name}", use_container_width=True, 
-                    help=f"Navigate to {label} page"):
-            st.session_state['page'] = page_name
-            st.rerun()
+# Function to render SVG files
+def render_svg(svg_file):
+    with open(svg_file, "r") as f:
+        svg = f.read()
+    return svg
 
-nav_button("Portfolio Allocation", "Portfolio Allocation", col1)
-nav_button("Compound Growth", "Compound Growth", col2)
-nav_button("Fund Comparison", "Fund Comparison", col3)
-nav_button("Tax Efficiency", "Tax Efficiency", col4)
-nav_button("Monte Carlo", "Monte Carlo Simulation", col5)
-nav_button("Financial Literacy", "Financial Literacy", col6)
+# Define active class for current page with icon
+def nav_button(label, page_name, container, icon_path=None):
+    active_class = "active" if st.session_state.page == page_name else ""
+    
+    with container:
+        # Create a layout for icon and text
+        if icon_path:
+            col_icon, col_text = st.columns([1, 4])
+            with col_icon:
+                st.markdown(f'<div style="display: flex; justify-content: center; align-items: center; height: 100%;">{render_svg(icon_path)}</div>', unsafe_allow_html=True)
+            
+            with col_text:
+                if st.button(label, key=f"nav_{page_name}", use_container_width=True, 
+                        help=f"Navigate to {label} page"):
+                    st.session_state['page'] = page_name
+                    st.rerun()
+        else:
+            if st.button(label, key=f"nav_{page_name}", use_container_width=True, 
+                        help=f"Navigate to {label} page"):
+                st.session_state['page'] = page_name
+                st.rerun()
+
+nav_button("Portfolio Allocation", "Portfolio Allocation", col1, "assets/portfolio_allocation.svg")
+nav_button("Compound Growth", "Compound Growth", col2, "assets/compound_growth.svg")
+nav_button("Fund Comparison", "Fund Comparison", col3, "assets/fund_comparison.svg")
+nav_button("Tax Efficiency", "Tax Efficiency", col4, "assets/tax_efficiency.svg")
+nav_button("Monte Carlo", "Monte Carlo Simulation", col5, "assets/monte_carlo.svg")
+nav_button("Financial Literacy", "Financial Literacy", col6, "assets/financial_literacy.svg")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
