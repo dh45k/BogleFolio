@@ -168,33 +168,8 @@ class Portfolio:
             int: The portfolio ID in the database
         """
         try:
-            # Create a portfolio-like object with the structure expected by save_portfolio
-            portfolio_data = {
-                'name': self.name,
-                'initial_investment': self.initial_investment,
-                'monthly_contribution': self.monthly_contribution,
-                'years_to_grow': self.years_to_grow,
-                'us_stock_allocation': self.us_stock_allocation,
-                'international_stock_allocation': self.international_stock_allocation,
-                'bond_allocation': self.bond_allocation,
-                'us_stock_fund': self.us_stock_fund,
-                'international_stock_fund': self.international_stock_fund,
-                'bond_fund': self.bond_fund,
-                'account_values': self.account_values,
-                'expected_return_us': self.expected_return_us,
-                'expected_return_intl': self.expected_return_intl,
-                'expected_return_bond': self.expected_return_bond
-            }
-            
-            # Create a temporary object that has the to_dict method
-            class TempPortfolio:
-                def to_dict(self):
-                    return portfolio_data
-            
-            temp_portfolio = TempPortfolio()
-            
-            # Save to the database
-            db_portfolio = db.save_portfolio(temp_portfolio, user_id)
+            # Save to the database directly using the current object
+            db_portfolio = db.save_portfolio(self, user_id)
             
             # Update our ID
             if db_portfolio:
@@ -202,7 +177,9 @@ class Portfolio:
                 return self.id
             return None
         except Exception as e:
+            import traceback
             print(f"Error saving portfolio to database: {e}")
+            print(traceback.format_exc())
             return None
             
     def load_from_db(self, portfolio_id, user_id=1):
@@ -221,13 +198,15 @@ class Portfolio:
             portfolio_data = db.load_portfolio(portfolio_id, user_id)
             
             if portfolio_data:
-                # Update portfolio with loaded data
+                # Update portfolio properties
+                self.id = portfolio_id
                 self.name = portfolio_data.get('name', 'My Portfolio')
                 self.initial_investment = portfolio_data.get('initial_investment', 10000)
                 self.monthly_contribution = portfolio_data.get('monthly_contribution', 500)
                 self.years_to_grow = portfolio_data.get('years_to_grow', 30)
                 
-                # Update allocations
+                # Update allocations - field names match those from the database
+                # In the database we have "us_stock" fields, but in the Portfolio class it's "us_stock_allocation"
                 self.us_stock_allocation = portfolio_data.get('us_stock', 60)
                 self.international_stock_allocation = portfolio_data.get('international_stock', 30)
                 self.bond_allocation = portfolio_data.get('bond', 10)
@@ -244,11 +223,30 @@ class Portfolio:
                 if 'Bond' in funds:
                     self.bond_fund = funds['Bond'].get('ticker', 'BND')
                 
+                # Make sure we have at least defaults for expected returns
+                if not hasattr(self, 'expected_return_us') or self.expected_return_us is None:
+                    self.expected_return_us = 7.0
+                if not hasattr(self, 'expected_return_intl') or self.expected_return_intl is None:
+                    self.expected_return_intl = 6.5
+                if not hasattr(self, 'expected_return_bond') or self.expected_return_bond is None:
+                    self.expected_return_bond = 3.0
+                
+                # Account values may not be present in the database
+                if not hasattr(self, 'account_values') or not self.account_values:
+                    self.account_values = {
+                        "401k": 100000,
+                        "IRA": 50000,
+                        "HSA": 20000,
+                        "Taxable": 30000
+                    }
+                
                 return True
             return False
             
         except Exception as e:
+            import traceback
             print(f"Error loading portfolio from database: {e}")
+            print(traceback.format_exc())
             return False
             
     def get_fund_name(self, ticker):

@@ -114,6 +114,9 @@ st.sidebar.markdown('</div>', unsafe_allow_html=True)
 # Save portfolio
 portfolio_name = st.sidebar.text_input("Portfolio Name:", value=st.session_state.current_portfolio_name)
 
+# Update portfolio name
+st.session_state.portfolio.name = portfolio_name
+
 # Storage options
 storage_option = st.sidebar.radio("Storage:", ["Local", "Database"], horizontal=True)
 
@@ -125,9 +128,13 @@ if st.sidebar.button("Save Portfolio"):
     # If database option selected, also save to database
     if storage_option == "Database":
         try:
-            from utils.db import save_portfolio
-            portfolio_db = save_portfolio(st.session_state.portfolio)
-            st.sidebar.success(f"Portfolio '{portfolio_name}' saved to database (ID: {portfolio_db.id})!")
+            # Use the save_to_db method from the Portfolio class
+            portfolio_id = st.session_state.portfolio.save_to_db()
+            if portfolio_id:
+                st.session_state.portfolio.id = portfolio_id
+                st.sidebar.success(f"Portfolio '{portfolio_name}' saved to database (ID: {portfolio_id})!")
+            else:
+                st.sidebar.error("Error saving to database. See server logs for details.")
         except Exception as e:
             st.sidebar.error(f"Error saving to database: {str(e)}")
     else:
@@ -151,10 +158,8 @@ if load_source == "Local" and st.session_state.portfolios:
         
 elif load_source == "Database":
     try:
-        from utils.db import get_user_portfolios, load_portfolio
-        
-        # Get list of portfolios from database
-        db_portfolios = get_user_portfolios()
+        # Get list of portfolios using class method
+        db_portfolios = Portfolio.get_user_portfolios()
         
         if db_portfolios:
             portfolio_options = [f"{p['name']} (ID: {p['id']})" for p in db_portfolios]
@@ -167,18 +172,27 @@ elif load_source == "Database":
             portfolio_id = int(selected_db_portfolio.split("(ID: ")[1].split(")")[0])
             
             if st.sidebar.button("Load DB Portfolio"):
-                # Load portfolio from database
-                portfolio_data = load_portfolio(portfolio_id)
-                if portfolio_data:
-                    # Convert to Portfolio object
-                    st.session_state.portfolio = Portfolio.from_dict(portfolio_data)
-                    st.session_state.current_portfolio_name = portfolio_data.get('name', f"DB Portfolio {portfolio_id}")
-                    st.sidebar.success(f"Portfolio loaded from database successfully!")
+                # Create a new portfolio instance and load from the database
+                new_portfolio = Portfolio()
+                success = new_portfolio.load_from_db(portfolio_id)
+                
+                if success:
+                    # Update the current portfolio in session state
+                    st.session_state.portfolio = new_portfolio
+                    st.session_state.current_portfolio_name = new_portfolio.name
+                    
+                    # Also save to local portfolios for offline access
+                    st.session_state.portfolios[new_portfolio.name] = new_portfolio.to_dict()
+                    
+                    st.sidebar.success(f"Portfolio '{new_portfolio.name}' (ID: {portfolio_id}) loaded from database successfully!")
                 else:
-                    st.sidebar.error("Failed to load portfolio from database.")
+                    st.sidebar.error("Failed to load portfolio from database. See server logs for details.")
         else:
             st.sidebar.info("No portfolios found in the database. Save a portfolio first.")
     except Exception as e:
+        import traceback
+        print(f"Error loading from database: {e}")
+        print(traceback.format_exc())
         st.sidebar.error(f"Error accessing database: {str(e)}")
 
 # Export/Import portfolios with styled section
