@@ -238,18 +238,33 @@ col1, col2 = st.columns([3, 2])
 with col1:
     st.markdown('<h3 class="footer-title">About This Tool</h3>', unsafe_allow_html=True)
     st.markdown('''
-    <div class="footer-text">
-        <p>This tool is designed for Bogleheads to optimize their 3-fund portfolios. It helps visualize asset allocation, 
+    <div class="footer-content">
+        <p style="margin-bottom:15px; line-height:1.5;">This tool is designed for Bogleheads to optimize their 3-fund portfolios. It helps visualize asset allocation, 
         project growth over time, compare fund expenses, optimize tax efficiency across different account types,
         and analyze retirement readiness through Monte Carlo simulations.</p>
         
-        <h4>Built following Bogleheads investment principles:</h4>
-        <ul>
-            <li><strong>Low-cost index funds</strong> - Minimize expenses to maximize returns</li>
-            <li><strong>Broad diversification</strong> - Invest in the entire market</li>
-            <li><strong>Long-term investment horizon</strong> - Stay the course</li>
-            <li><strong>Tax-efficient fund placement</strong> - Optimize across account types</li>
-            <li><strong>Data-driven retirement planning</strong> - Make informed decisions</li>
+        <h4 style="color:#1E5631; margin:20px 0 15px 0; font-size:1.1rem;">Built following Bogleheads investment principles:</h4>
+        <ul style="list-style-type:none; padding-left:0; margin-bottom:20px;">
+            <li style="margin-bottom:8px; display:flex; align-items:flex-start;">
+                <span style="color:#1E5631; margin-right:8px;">•</span>
+                <span><strong>Low-cost index funds</strong> — Minimize expenses to maximize returns</span>
+            </li>
+            <li style="margin-bottom:8px; display:flex; align-items:flex-start;">
+                <span style="color:#1E5631; margin-right:8px;">•</span>
+                <span><strong>Broad diversification</strong> — Invest in the entire market</span>
+            </li>
+            <li style="margin-bottom:8px; display:flex; align-items:flex-start;">
+                <span style="color:#1E5631; margin-right:8px;">•</span>
+                <span><strong>Long-term investment horizon</strong> — Stay the course</span>
+            </li>
+            <li style="margin-bottom:8px; display:flex; align-items:flex-start;">
+                <span style="color:#1E5631; margin-right:8px;">•</span>
+                <span><strong>Tax-efficient fund placement</strong> — Optimize across account types</span>
+            </li>
+            <li style="margin-bottom:8px; display:flex; align-items:flex-start;">
+                <span style="color:#1E5631; margin-right:8px;">•</span>
+                <span><strong>Data-driven retirement planning</strong> — Make informed decisions</span>
+            </li>
         </ul>
     </div>
     ''', unsafe_allow_html=True)
@@ -257,18 +272,21 @@ with col1:
 with col2:
     st.markdown('<h3 class="footer-title">Important Information</h3>', unsafe_allow_html=True)
     st.markdown('''
-    <div class="disclaimer-box">
-        <p><strong>DISCLAIMER:</strong> This tool and content are for educational and information purposes only. 
-        The information provided is not financial or tax advice. Please consult with qualified professionals 
-        before making investment decisions.</p>
+    <div class="footer-content">
+        <div style="background-color:#f8f9fa; border-left:4px solid #1E5631; padding:15px; margin-bottom:20px; border-radius:0 4px 4px 0;">
+            <p style="margin-bottom:10px; font-weight:500;">DISCLAIMER:</p>
+            <p style="margin-bottom:10px; font-size:0.9rem; line-height:1.5;">This tool and content are for educational and information purposes only. 
+            The information provided is not financial or tax advice. Please consult with qualified professionals 
+            before making investment decisions.</p>
+            
+            <p style="font-size:0.9rem; line-height:1.5;">All recommendations are based on the Bogleheads investment philosophy of passive, 
+            low-cost, diversified investing. Past performance is not indicative of future results.</p>
+        </div>
         
-        <p>All recommendations are based on the Bogleheads investment philosophy of passive, 
-        low-cost, diversified investing. Past performance is not indicative of future results.</p>
-    </div>
-    
-    <div class="version-info">
-        <p>Version 1.0 | Last Updated: April 2025</p>
-        <p>Created with ♥ for the Bogleheads community</p>
+        <div style="text-align:center; margin-top:30px; color:#666; font-size:0.9rem;">
+            <p style="margin-bottom:5px;">Version 1.0 | Last Updated: April 2025</p>
+            <p>Created with ♥ for the Bogleheads community</p>
+        </div>
     </div>
     ''', unsafe_allow_html=True)
 
