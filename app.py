@@ -101,6 +101,10 @@ st.markdown("""
         <div class="nav-icon">🎲</div>
         <div class="nav-text">Monte Carlo</div>
     </div>
+    <div class="nav-button {}" onclick="handleNavClick('Financial Literacy')">
+        <div class="nav-icon">📚</div>
+        <div class="nav-text">Financial Literacy</div>
+    </div>
 </div>
 
 <script>
@@ -119,7 +123,8 @@ function handleNavClick(page) {{
     "active" if st.session_state.page == "Compound Growth" else "",
     "active" if st.session_state.page == "Fund Comparison" else "",
     "active" if st.session_state.page == "Tax Efficiency" else "",
-    "active" if st.session_state.page == "Monte Carlo Simulation" else ""
+    "active" if st.session_state.page == "Monte Carlo Simulation" else "",
+    "active" if st.session_state.page == "Financial Literacy" else ""
 ), unsafe_allow_html=True)
 
 # Hidden input for JavaScript to communicate back to Python
@@ -138,7 +143,7 @@ with st.container():
     </style>
     """, unsafe_allow_html=True)
     
-    col1, col2, col3, col4, col5 = st.columns(5)
+    col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("Portfolio Allocation", use_container_width=True, key="btn_allocation"):
             st.session_state['page'] = "Portfolio Allocation"
@@ -151,6 +156,8 @@ with st.container():
         if st.button("Fund Comparison", use_container_width=True, key="btn_comparison"):
             st.session_state['page'] = "Fund Comparison"
             st.rerun()
+    
+    col4, col5, col6 = st.columns(3)
     with col4:
         if st.button("Tax Efficiency", use_container_width=True, key="btn_tax"):
             st.session_state['page'] = "Tax Efficiency"
@@ -158,6 +165,10 @@ with st.container():
     with col5:
         if st.button("Monte Carlo", use_container_width=True, key="btn_monte"):
             st.session_state['page'] = "Monte Carlo Simulation"
+            st.rerun()
+    with col6:
+        if st.button("Financial Literacy", use_container_width=True, key="btn_literacy"):
+            st.session_state['page'] = "Financial Literacy"
             st.rerun()
 
 st.markdown("---")
@@ -173,7 +184,7 @@ st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 # Custom navigation sidebar without the default pages
 st.sidebar.markdown("<h2>Navigation</h2>", unsafe_allow_html=True)
-page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation"]
+page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation", "Financial Literacy"]
 page = st.sidebar.radio(
     "Select page:",
     page_options,
@@ -302,6 +313,9 @@ elif page == "Tax Efficiency":
 elif page == "Monte Carlo Simulation":
     from custom_pages.pages.monte_carlo import show_monte_carlo_page
     show_monte_carlo_page(st.session_state.portfolio)
+elif page == "Financial Literacy":
+    from custom_pages.pages.financial_literacy import show_financial_literacy_page
+    show_financial_literacy_page()
 
 # Footer
 st.markdown("---")
