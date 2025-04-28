@@ -1,12 +1,31 @@
 import os
-from openai import OpenAI
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
 # do not change this unless explicitly requested by the user
 MODEL = "gpt-4o"
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# Initialize OpenAI client with error handling
+try:
+    from openai import OpenAI
+    api_key = os.environ.get("OPENAI_API_KEY")
+    
+    if not api_key:
+        logger.warning("OpenAI API key not found in environment variables")
+        client = None
+    else:
+        client = OpenAI(api_key=api_key)
+        logger.info("OpenAI client initialized successfully")
+except ImportError:
+    logger.error("Failed to import OpenAI module")
+    client = None
+except Exception as e:
+    logger.error(f"Error initializing OpenAI client: {e}")
+    client = None
 
 # System message for investment advisor
 INVESTMENT_ADVISOR_SYSTEM_MESSAGE = """
@@ -43,6 +62,9 @@ def get_chatbot_response(messages, include_system_message=True):
     Returns:
         String response from the chatbot
     """
+    if client is None:
+        return "Sorry, the AI Assistant is currently unavailable. Please check your OpenAI API key."
+        
     try:
         if include_system_message:
             full_messages = [
@@ -60,6 +82,7 @@ def get_chatbot_response(messages, include_system_message=True):
         
         return response.choices[0].message.content
     except Exception as e:
+        logger.error(f"Error in get_chatbot_response: {str(e)}")
         return f"Sorry, I encountered an error: {str(e)}"
 
 def get_fund_comparison(fund_info):
@@ -72,6 +95,9 @@ def get_fund_comparison(fund_info):
     Returns:
         String analysis from the chatbot
     """
+    if client is None:
+        return "Sorry, the Fund Comparison tool is currently unavailable. Please check your OpenAI API key."
+        
     try:
         prompt = f"""
         Please compare these investment funds and provide a concise analysis:
@@ -102,6 +128,7 @@ def get_fund_comparison(fund_info):
         
         return response.choices[0].message.content
     except Exception as e:
+        logger.error(f"Error in get_fund_comparison: {str(e)}")
         return f"Sorry, I encountered an error: {str(e)}"
 
 def get_allocation_advice(age, risk_tolerance, financial_situation):
@@ -116,6 +143,9 @@ def get_allocation_advice(age, risk_tolerance, financial_situation):
     Returns:
         String advice from the chatbot
     """
+    if client is None:
+        return "Sorry, the Asset Allocation Advisor is currently unavailable. Please check your OpenAI API key."
+        
     try:
         prompt = f"""
         Please recommend an asset allocation for someone with these characteristics:
@@ -143,4 +173,5 @@ def get_allocation_advice(age, risk_tolerance, financial_situation):
         
         return response.choices[0].message.content
     except Exception as e:
+        logger.error(f"Error in get_allocation_advice: {str(e)}")
         return f"Sorry, I encountered an error: {str(e)}"

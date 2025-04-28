@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 from utils.chatbot import get_chatbot_response, get_allocation_advice, get_fund_comparison
 
 def show_chatbot_page():
@@ -25,6 +26,27 @@ def show_chatbot_page():
     low-cost index funds, proper asset allocation, and long-term investing strategies.
     """)
     
+    # Check if OpenAI API key is available
+    openai_api_key = os.environ.get("OPENAI_API_KEY")
+    
+    if not openai_api_key:
+        st.warning("""
+        **OpenAI API Key Not Found**
+        
+        The AI Assistant requires an OpenAI API key to function. Without this key, the chatbot and investment tools cannot provide responses.
+        
+        Please add your OpenAI API key to continue using this feature.
+        """)
+        st.markdown("### How to Get an OpenAI API Key")
+        st.markdown("""
+        1. Visit [OpenAI's Platform](https://platform.openai.com/signup)
+        2. Create an account or sign in
+        3. Navigate to the API Keys section
+        4. Create a new secret key
+        5. Add the key to this application
+        """)
+        return
+        
     # Initialize chat history
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -46,8 +68,13 @@ def show_chatbot_page():
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                response = get_chatbot_response(st.session_state.messages)
-                st.markdown(response)
+                try:
+                    response = get_chatbot_response(st.session_state.messages)
+                    st.markdown(response)
+                except Exception as e:
+                    error_msg = f"Sorry, I encountered an error: {str(e)}"
+                    st.error(error_msg)
+                    response = error_msg
         
         # Add assistant response to chat history
         st.session_state.messages.append({"role": "assistant", "content": response})
@@ -75,8 +102,12 @@ def show_chatbot_page():
             
             if st.button("Get Allocation Advice"):
                 with st.spinner("Generating advice..."):
-                    advice = get_allocation_advice(age, risk_tolerance, financial_situation)
-                    st.markdown(advice)
+                    try:
+                        advice = get_allocation_advice(age, risk_tolerance, financial_situation)
+                        st.markdown(advice)
+                    except Exception as e:
+                        error_msg = f"Sorry, I encountered an error: {str(e)}"
+                        st.error(error_msg)
     
     with col2:
         st.markdown("#### Fund Comparison Tool")
@@ -90,8 +121,12 @@ def show_chatbot_page():
             
             if st.button("Compare Funds"):
                 with st.spinner("Analyzing funds..."):
-                    comparison = get_fund_comparison(fund_info)
-                    st.markdown(comparison)
+                    try:
+                        comparison = get_fund_comparison(fund_info)
+                        st.markdown(comparison)
+                    except Exception as e:
+                        error_msg = f"Sorry, I encountered an error: {str(e)}"
+                        st.error(error_msg)
     
     # Educational resources
     st.markdown("### Educational Resources")
