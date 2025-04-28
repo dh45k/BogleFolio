@@ -27,28 +27,138 @@ if 'page' not in st.session_state:
 # Main app title
 st.title("Boglehead 3-Fund Portfolio Optimizer")
 
-# Main page navigation tabs
-col1, col2, col3, col4, col5 = st.columns(5)
-with col1:
-    if st.button("Portfolio Allocation", use_container_width=True):
-        st.session_state['page'] = "Portfolio Allocation"
-        st.rerun()
-with col2:
-    if st.button("Compound Growth", use_container_width=True):
-        st.session_state['page'] = "Compound Growth"
-        st.rerun()
-with col3:
-    if st.button("Fund Comparison", use_container_width=True):
-        st.session_state['page'] = "Fund Comparison"
-        st.rerun()
-with col4:
-    if st.button("Tax Efficiency", use_container_width=True):
-        st.session_state['page'] = "Tax Efficiency"
-        st.rerun()
-with col5:
-    if st.button("Monte Carlo", use_container_width=True):
-        st.session_state['page'] = "Monte Carlo Simulation"
-        st.rerun()
+# Custom CSS for menu buttons
+st.markdown("""
+<style>
+    .nav-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f2f6;
+        color: #262730;
+        border-radius: 0.5rem;
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem;
+        text-align: center;
+        margin: 0.25rem;
+        min-height: 80px;
+        flex-direction: column;
+        transition: all 0.3s;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    
+    .nav-button:hover {
+        background-color: #dfe2e6;
+        border-color: #bbb;
+    }
+    
+    .nav-button.active {
+        background-color: #4055a5;
+        color: white;
+        border-color: #4055a5;
+    }
+    
+    .nav-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .nav-text {
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .menu-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Main page navigation with enhanced buttons
+st.markdown("""
+<div class="menu-container">
+    <div class="nav-button {}" onclick="handleNavClick('Portfolio Allocation')">
+        <div class="nav-icon">📊</div>
+        <div class="nav-text">Portfolio Allocation</div>
+    </div>
+    <div class="nav-button {}" onclick="handleNavClick('Compound Growth')">
+        <div class="nav-icon">📈</div>
+        <div class="nav-text">Compound Growth</div>
+    </div>
+    <div class="nav-button {}" onclick="handleNavClick('Fund Comparison')">
+        <div class="nav-icon">🔍</div>
+        <div class="nav-text">Fund Comparison</div>
+    </div>
+    <div class="nav-button {}" onclick="handleNavClick('Tax Efficiency')">
+        <div class="nav-icon">💰</div>
+        <div class="nav-text">Tax Efficiency</div>
+    </div>
+    <div class="nav-button {}" onclick="handleNavClick('Monte Carlo Simulation')">
+        <div class="nav-icon">🎲</div>
+        <div class="nav-text">Monte Carlo</div>
+    </div>
+</div>
+
+<script>
+function handleNavClick(page) {{
+    // Use Streamlit's postMessage to communicate with Python
+    window.parent.postMessage({{
+        type: "streamlit:setComponentValue",
+        value: page,
+        dataType: "string",
+        key: "nav_selection"
+    }}, "*");
+}}
+</script>
+""".format(
+    "active" if st.session_state.page == "Portfolio Allocation" else "",
+    "active" if st.session_state.page == "Compound Growth" else "",
+    "active" if st.session_state.page == "Fund Comparison" else "",
+    "active" if st.session_state.page == "Tax Efficiency" else "",
+    "active" if st.session_state.page == "Monte Carlo Simulation" else ""
+), unsafe_allow_html=True)
+
+# Hidden input for JavaScript to communicate back to Python
+nav_selection = st.text_input("Navigation", key="nav_selection", label_visibility="collapsed")
+if nav_selection and nav_selection != st.session_state.page:
+    st.session_state.page = nav_selection
+    st.rerun()
+
+# Fallback navigation buttons (hidden but functional if JavaScript doesn't work)
+with st.container():
+    st.markdown("""
+    <style>
+        [data-testid="stHorizontalBlock"] {
+            display: none;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1:
+        if st.button("Portfolio Allocation", use_container_width=True, key="btn_allocation"):
+            st.session_state['page'] = "Portfolio Allocation"
+            st.rerun()
+    with col2:
+        if st.button("Compound Growth", use_container_width=True, key="btn_growth"):
+            st.session_state['page'] = "Compound Growth"
+            st.rerun()
+    with col3:
+        if st.button("Fund Comparison", use_container_width=True, key="btn_comparison"):
+            st.session_state['page'] = "Fund Comparison"
+            st.rerun()
+    with col4:
+        if st.button("Tax Efficiency", use_container_width=True, key="btn_tax"):
+            st.session_state['page'] = "Tax Efficiency"
+            st.rerun()
+    with col5:
+        if st.button("Monte Carlo", use_container_width=True, key="btn_monte"):
+            st.session_state['page'] = "Monte Carlo Simulation"
+            st.rerun()
 
 st.markdown("---")
 
