@@ -26,11 +26,7 @@ st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 def render_svg(svg_file):
     with open(svg_file, "r") as f:
         svg = f.read()
-    b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
-    html = f'''
-    <img src="data:image/svg+xml;base64,{b64}" width="64" height="64">
-    '''
-    return html
+    return svg
 
 # Initialize session state for portfolio
 if 'portfolio' not in st.session_state:
@@ -57,11 +53,48 @@ with col_title:
 st.markdown('<div class="nav-container">', unsafe_allow_html=True)
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
-# Function to render SVG files
-def render_svg(svg_file):
-    with open(svg_file, "r") as f:
-        svg = f.read()
-    return svg
+# CSS for navigation buttons with icons
+nav_styles = """
+<style>
+    .nav-container button {
+        background-color: #f8f9fa;
+        color: #333;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 4px;
+        font-weight: 500;
+        transition: all 0.2s;
+        border: 1px solid #eee;
+    }
+    .nav-container button:hover {
+        background-color: #e9f7ef;
+        color: #1E5631;
+        border: 1px solid #1E5631;
+    }
+    .nav-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 24px;
+        width: 24px;
+        margin: 0 auto;
+    }
+    .nav-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+    .st-emotion-cache-7ym5gk {
+        display: inline-block;
+    }
+    .nav-container svg path {
+        transition: fill 0.3s, stroke 0.3s;
+    }
+    .nav-container button:hover svg path {
+        stroke: #1E5631;
+    }
+</style>
+"""
+st.markdown(nav_styles, unsafe_allow_html=True)
 
 # Define active class for current page with icon
 def nav_button(label, page_name, container, icon_path=None):
