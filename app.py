@@ -78,33 +78,29 @@ st.markdown('</div>', unsafe_allow_html=True)
 # Add a subtle divider
 st.markdown('<hr style="height:2px;border:none;color:#f0f0f0;background-color:#f0f0f0;margin-bottom:24px;">', unsafe_allow_html=True)
 
-# Hide default Streamlit menu and footer
-hide_menu_style = """
+# Hide default Streamlit menu, footer, and sidebar navigation
+hide_elements_style = """
         <style>
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         </style>
         """
-st.markdown(hide_menu_style, unsafe_allow_html=True)
+st.markdown(hide_elements_style, unsafe_allow_html=True)
 
-# Custom navigation sidebar with improved styling
-st.sidebar.markdown('<div class="sidebar-header">', unsafe_allow_html=True)
-st.sidebar.markdown('<h2 style="color:#1E5631; border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px;">Navigation</h2>', unsafe_allow_html=True)
-st.sidebar.markdown('</div>', unsafe_allow_html=True)
+# Add custom CSS to only show portfolio management in sidebar
+sidebar_style = """
+    <style>
+    section[data-testid="stSidebar"] {
+        width: 350px !important; /* Adjust width */
+    }
+    </style>
+"""
+st.markdown(sidebar_style, unsafe_allow_html=True)
 
-# Create the navigation with custom styling
+# Hide sidebar navigation - now only using top navigation
+# But still keep track of the current page in session state
 page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation", "Financial Literacy"]
-page = st.sidebar.radio(
-    "Select page:",
-    page_options,
-    index=page_options.index(st.session_state.page) if st.session_state.page in page_options else 0,
-    label_visibility="collapsed"
-)
-
-# Update page in session state when changed via sidebar
-if page != st.session_state.page:
-    st.session_state.page = page
-    st.rerun()
+page = st.session_state.page
 
 # Portfolio management in sidebar with improved styling
 st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
