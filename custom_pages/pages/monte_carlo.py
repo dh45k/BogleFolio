@@ -3,11 +3,17 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 from utils.monte_carlo import run_monte_carlo_simulation, generate_monte_carlo_plot, calculate_success_rates, calculate_retirement_readiness
+from custom_pages.pages.shared import display_quote, display_boglebot_sidebar
 
 def show_monte_carlo_page(portfolio):
     """
     Display the Monte Carlo simulation page for retirement planning
     """
+    # Display a Bogle quote
+    display_quote()
+    
+    # Add the Boglebot chat interface
+    display_boglebot_sidebar()
     st.title("Monte Carlo Retirement Simulation")
     
     st.markdown("""
