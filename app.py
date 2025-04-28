@@ -88,7 +88,7 @@ st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 # Custom navigation sidebar with improved styling
 st.sidebar.markdown('<div class="sidebar-header">', unsafe_allow_html=True)
-st.sidebar.markdown('<h2 style="color:#014361; border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px;">Navigation</h2>', unsafe_allow_html=True)
+st.sidebar.markdown('<h2 style="color:#1E5631; border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px;">Navigation</h2>', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 # Create the navigation with custom styling
@@ -108,7 +108,7 @@ if page != st.session_state.page:
 # Portfolio management in sidebar with improved styling
 st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
 st.sidebar.markdown('<hr style="margin: 30px 0 20px 0; border-color: #f0f0f0;">', unsafe_allow_html=True)
-st.sidebar.markdown('<h2 style="color:#014361; font-size:1.5rem; margin-bottom:15px;">Portfolio Management</h2>', unsafe_allow_html=True)
+st.sidebar.markdown('<h2 style="color:#1E5631; font-size:1.5rem; margin-bottom:15px;">Portfolio Management</h2>', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 # Save portfolio
@@ -184,7 +184,7 @@ elif load_source == "Database":
 # Export/Import portfolios with styled section
 st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
 st.sidebar.markdown('<hr style="margin: 30px 0 20px 0; border-color: #f0f0f0;">', unsafe_allow_html=True)
-st.sidebar.markdown('<h2 style="color:#014361; font-size:1.5rem; margin-bottom:15px;">Export/Import</h2>', unsafe_allow_html=True)
+st.sidebar.markdown('<h2 style="color:#1E5631; font-size:1.5rem; margin-bottom:15px;">Export/Import</h2>', unsafe_allow_html=True)
 st.sidebar.markdown('<p style="font-size:0.9rem; color:#666; margin-bottom:15px;">Save your portfolios as JSON files or import previously saved portfolios.</p>', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
