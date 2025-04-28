@@ -78,28 +78,79 @@ st.markdown('</div>', unsafe_allow_html=True)
 # Add a subtle divider
 st.markdown('<hr style="height:2px;border:none;color:#f0f0f0;background-color:#f0f0f0;margin-bottom:24px;">', unsafe_allow_html=True)
 
-# Hide default Streamlit menu, footer, completely hide the sidebar, and hamburger menu
+# Hide default Streamlit menu, footer, completely hide the sidebar, and all header controls
 hide_elements_style = """
         <style>
+        /* Hide main menu and footer */
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
+        
+        /* Hide sidebar completely */
         section[data-testid="stSidebar"] {
             display: none !important;
         }
+        
+        /* Adjust main content container */
         .main .block-container {
             padding-left: 2rem;
             padding-right: 2rem;
             max-width: 1200px;
         }
-        /* Hide hamburger menu */
+        
+        /* Hide ALL header elements - this will remove the '>' button */
+        header {
+            background-color: transparent !important;
+        }
+        
+        header > div:first-child {
+            display: none !important;
+        }
+        
+        /* Hide ALL sidebar control elements */
+        div[data-testid="collapsedControl"] {
+            display: none !important;
+        }
+        
+        /* Additional specific selectors for the hamburger/sidebar button */
+        button[kind="headerNoPadding"] {
+            display: none !important;
+        }
+        
         header button[data-testid="baseButton-headerNoPadding"] {
             display: none !important;
         }
-        /* Hide the deploy button in header menu */
-        header div[data-testid="stToolbar"] {
+        
+        /* Emotion cache classes that might contain the button */
+        .st-emotion-cache-1dp5vir {
+            display: none !important;
+        }
+        
+        .st-emotion-cache-jnd7a {
+            display: none !important;
+        }
+        
+        /* More aggressive approach to hide all header buttons */
+        header button {
             display: none !important;
         }
         </style>
+        
+        <script>
+        // JavaScript to remove the button after page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide any sidebar toggle buttons that might appear
+            const sidebarButtons = document.querySelectorAll('[data-testid="collapsedControl"]');
+            sidebarButtons.forEach(button => {
+                button.style.display = 'none';
+            });
+            
+            // Also target header buttons
+            const headerButtons = document.querySelectorAll('header button');
+            headerButtons.forEach(button => {
+                button.style.display = 'none';
+            });
+        });
+        </script>
         """
 st.markdown(hide_elements_style, unsafe_allow_html=True)
 
