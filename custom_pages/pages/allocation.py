@@ -252,32 +252,18 @@ def show_allocation_page(portfolio):
     
     st.subheader("Jack Bogle's Words in YouTube Videos")
     
-    # Display videos in columns for better organization
-    col1, col2 = st.columns(2)
+    # Shorts as links
+    st.markdown("""
+    - [John Bogle: Important Rule For Investors](https://youtube.com/shorts/2zlrR6lXDJ0?si=HAephkTl49npWM-n)
+    - [WARREN BUFFETT JACK BOGLE](https://youtube.com/shorts/8v3jBQSod_A?si=KjGLq5kv8i3sJ8ks)
+    - [John Bogle: How to Get Rich Investing?](https://youtube.com/shorts/qyLoTOhMjSM?si=ROPoR3fGpN2-Yb_k)
+    - [Jack BOGLE: Invest For A LIFETIME #jackbogle](https://youtube.com/shorts/9ZPcVeS9LOE?si=QECz6Hs8stZq-cTX)
+    - [Jack Bogle on how to handle market declines](https://youtube.com/shorts/n4N45Dk5c9M?si=KE2SIatgq59cu_2w)
+    - [Jack Bogle's Money Advice](https://youtube.com/shorts/woOxKtYX-2I?si=KAf5EJvq4Y1IOaIR)
+    - [Don't time the market. "Jack Bogle: Stay The Course."](https://youtube.com/shorts/zaEBrWCJyPo?si=bfaa4S5CJUnAkXW2)
+    """)
     
-    with col1:
-        st.video("https://youtube.com/shorts/2zlrR6lXDJ0", start_time=0)
-        st.caption("John Bogle: Important Rule For Investors")
-        
-        st.video("https://youtube.com/shorts/qyLoTOhMjSM", start_time=0)
-        st.caption("John Bogle: How to Get Rich Investing?")
-        
-        st.video("https://youtube.com/shorts/n4N45Dk5c9M", start_time=0)
-        st.caption("Jack Bogle on how to handle market declines")
-        
-        st.video("https://youtube.com/shorts/zaEBrWCJyPo", start_time=0)
-        st.caption("Don't time the market. \"Jack Bogle: Stay The Course.\"")
-    
-    with col2:
-        st.video("https://youtube.com/shorts/8v3jBQSod_A", start_time=0)
-        st.caption("WARREN BUFFETT JACK BOGLE")
-        
-        st.video("https://youtube.com/shorts/9ZPcVeS9LOE", start_time=0)
-        st.caption("Jack BOGLE: Invest For A LIFETIME")
-        
-        st.video("https://youtube.com/shorts/woOxKtYX-2I", start_time=0)
-        st.caption("Jack Bogle's Money Advice")
-    
-    # This longer video placed at full width
+    # Keep the full YouTube video embedded
+    st.subheader("Featured Video")
     st.video("https://youtube.com/watch?v=PN6uKE_vbWs", start_time=0)
     st.caption("How to Have the Perfect Portfolio in Investment - John Bogle's view")
