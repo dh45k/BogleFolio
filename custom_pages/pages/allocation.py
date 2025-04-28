@@ -19,30 +19,68 @@ def show_allocation_page(portfolio):
     with col1:
         st.subheader("Asset Allocation")
         
-        # Display sliders for allocation percentages
-        us_stocks = st.slider(
-            "US Stocks (%)", 
-            min_value=0, max_value=100, 
-            value=portfolio.us_stock_allocation,
-            step=1,
-            key="us_stocks_slider"
-        )
+        # Set up interface for allocation inputs
+        st.write("Adjust allocation using sliders or enter percentages directly:")
         
-        international_stocks = st.slider(
-            "International Stocks (%)", 
-            min_value=0, max_value=100, 
-            value=portfolio.international_stock_allocation,
-            step=1,
-            key="intl_stocks_slider"
-        )
+        # Function to initialize session state for synchronized values if not already present
+        def init_synced_value(key, default_value):
+            if f"{key}_value" not in st.session_state:
+                st.session_state[f"{key}_value"] = default_value
         
-        bonds = st.slider(
-            "Bonds (%)", 
-            min_value=0, max_value=100, 
-            value=portfolio.bond_allocation,
-            step=1,
-            key="bonds_slider"
-        )
+        # Initialize session state for each allocation type
+        init_synced_value("us_stocks", portfolio.us_stock_allocation)
+        init_synced_value("intl_stocks", portfolio.international_stock_allocation)
+        init_synced_value("bonds", portfolio.bond_allocation)
+        
+        # Create callbacks to sync the values
+        def update_value(key):
+            def callback():
+                # Update the synced value whenever either input changes
+                input_value = st.session_state.get(f"{key}_input", 0)
+                slider_value = st.session_state.get(f"{key}_slider", 0)
+                # Use the most recently changed value
+                st.session_state[f"{key}_value"] = input_value
+            return callback
+        
+        # Helper function to create allocation input row with label, slider and number input
+        def allocation_input_row(label, key):
+            col_label, col_slider, col_input = st.columns([2, 4, 1])
+            
+            with col_label:
+                st.write(f"**{label}**")
+            
+            # Get the current synced value
+            current_value = st.session_state[f"{key}_value"]
+            
+            with col_slider:
+                st.slider(
+                    f"###{label} Slider", 
+                    min_value=0, max_value=100, 
+                    value=current_value,
+                    step=1,
+                    key=f"{key}_slider",
+                    on_change=update_value(key),
+                    label_visibility="collapsed"
+                )
+            
+            with col_input:
+                st.number_input(
+                    f"###{label} Input", 
+                    min_value=0, max_value=100, 
+                    value=current_value,
+                    step=1,
+                    key=f"{key}_input",
+                    on_change=update_value(key),
+                    label_visibility="collapsed"
+                )
+            
+            # Return the synced value
+            return st.session_state[f"{key}_value"]
+        
+        # Display allocation inputs using our new approach
+        us_stocks = allocation_input_row("US Stocks (%)", "us_stocks")
+        international_stocks = allocation_input_row("International Stocks (%)", "intl_stocks")
+        bonds = allocation_input_row("Bonds (%)", "bonds")
         
         # Calculate total allocation
         total_allocation = us_stocks + international_stocks + bonds
