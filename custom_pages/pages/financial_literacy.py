@@ -1,10 +1,17 @@
 import streamlit as st
+from custom_pages.pages.shared import display_quote, display_boglebot_sidebar
 
 def show_financial_literacy_page():
     """
     Display the financial literacy page with educational content
     """
     st.header("Financial Literacy")
+    
+    # Display a Bogle quote
+    display_quote()
+    
+    # Add the Boglebot chat interface
+    display_boglebot_sidebar()
     
     # Introduction
     st.markdown("""
