@@ -3,17 +3,11 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 from data.fund_data import get_fund_data, get_fund_alternatives
-from custom_pages.pages.shared import display_quote, display_boglebot_sidebar
 
 def show_allocation_page(portfolio):
     """
     Display the portfolio allocation page
     """
-    # Display a Bogle quote
-    display_quote()
-    
-    # Add the Boglebot chat interface
-    display_boglebot_sidebar()
     st.header("Portfolio Allocation")
     
     # Get fund data

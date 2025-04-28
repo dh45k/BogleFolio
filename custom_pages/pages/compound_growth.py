@@ -4,17 +4,11 @@ import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
 from utils.compound_calculator import calculate_portfolio_growth, calculate_fee_impact
-from custom_pages.pages.shared import display_quote, display_boglebot_sidebar
 
 def show_compound_growth_page(portfolio):
     """
     Display the compound growth projection page
     """
-    # Display a Bogle quote
-    display_quote()
-    
-    # Add the Boglebot chat interface
-    display_boglebot_sidebar()
     st.header("Compound Growth Projections")
     
     # Investment parameters section

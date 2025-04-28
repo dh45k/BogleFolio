@@ -3,17 +3,11 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from utils.tax_efficiency import TaxEfficiencyCalculator
-from custom_pages.pages.shared import display_quote, display_boglebot_sidebar
 
 def show_tax_efficiency_page(portfolio):
     """
     Display the tax efficiency page
     """
-    # Display a Bogle quote
-    display_quote()
-    
-    # Add the Boglebot chat interface
-    display_boglebot_sidebar()
     st.header("Tax-Efficient Fund Placement")
     
     # Create tax efficiency calculator

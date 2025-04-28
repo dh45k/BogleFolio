@@ -3,17 +3,11 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from data.fund_data import get_fund_data
-from custom_pages.pages.shared import display_quote, display_boglebot_sidebar
 
 def show_fund_comparison_page():
     """
     Display the fund comparison page
     """
-    # Display a Bogle quote
-    display_quote()
-    
-    # Add the Boglebot chat interface
-    display_boglebot_sidebar()
     st.header("Fund Comparison")
     
     # Get fund data
