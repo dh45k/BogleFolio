@@ -19,17 +19,17 @@ def show_compound_growth_page(portfolio):
     with col1:
         initial_investment = st.number_input(
             "Initial Investment ($)",
-            min_value=0,
-            value=portfolio.initial_investment,
-            step=1000
+            min_value=0.0,
+            value=float(portfolio.initial_investment),
+            step=1000.0
         )
     
     with col2:
         monthly_contribution = st.number_input(
             "Monthly Contribution ($)",
-            min_value=0,
-            value=portfolio.monthly_contribution,
-            step=100
+            min_value=0.0,
+            value=float(portfolio.monthly_contribution),
+            step=100.0
         )
     
     with col3:
@@ -37,7 +37,7 @@ def show_compound_growth_page(portfolio):
             "Years to Grow",
             min_value=1,
             max_value=50,
-            value=portfolio.years_to_grow,
+            value=int(portfolio.years_to_grow),
             step=1
         )
     
