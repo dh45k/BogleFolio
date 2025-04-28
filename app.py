@@ -63,7 +63,7 @@ st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 # Custom navigation sidebar without the default pages
 st.sidebar.markdown("<h2>Navigation</h2>", unsafe_allow_html=True)
-page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation", "Portfolio Backtesting"]
+page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation"]
 page = st.sidebar.radio(
     "Select page:",
     page_options,
@@ -192,9 +192,6 @@ elif page == "Tax Efficiency":
 elif page == "Monte Carlo Simulation":
     from custom_pages.pages.monte_carlo import show_monte_carlo_page
     show_monte_carlo_page(st.session_state.portfolio)
-elif page == "Portfolio Backtesting":
-    from custom_pages.pages.backtesting import show_backtesting_page
-    show_backtesting_page(st.session_state.portfolio)
 
 # Footer
 st.markdown("---")
@@ -202,7 +199,7 @@ st.markdown("### About This Tool")
 st.markdown("""
 This tool is designed for Bogleheads to optimize their 3-fund portfolios. It helps visualize asset allocation, 
 project growth over time, compare fund expenses, optimize tax efficiency across different account types,
-analyze retirement readiness through Monte Carlo simulations, and backtest portfolios against historical market conditions.
+and analyze retirement readiness through Monte Carlo simulations.
 
 Built following Bogleheads investment principles:
 - Low-cost index funds
