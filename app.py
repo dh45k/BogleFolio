@@ -78,24 +78,22 @@ st.markdown('</div>', unsafe_allow_html=True)
 # Add a subtle divider
 st.markdown('<hr style="height:2px;border:none;color:#f0f0f0;background-color:#f0f0f0;margin-bottom:24px;">', unsafe_allow_html=True)
 
-# Hide default Streamlit menu, footer, and sidebar navigation
+# Hide default Streamlit menu, footer, and completely hide the sidebar
 hide_elements_style = """
         <style>
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
+        section[data-testid="stSidebar"] {
+            display: none !important;
+        }
+        .main .block-container {
+            padding-left: 2rem;
+            padding-right: 2rem;
+            max-width: 1200px;
+        }
         </style>
         """
 st.markdown(hide_elements_style, unsafe_allow_html=True)
-
-# Add custom CSS to only show portfolio management in sidebar
-sidebar_style = """
-    <style>
-    section[data-testid="stSidebar"] {
-        width: 350px !important; /* Adjust width */
-    }
-    </style>
-"""
-st.markdown(sidebar_style, unsafe_allow_html=True)
 
 # Hide sidebar navigation - now only using top navigation
 # But still keep track of the current page in session state
