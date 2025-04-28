@@ -172,7 +172,7 @@ def get_historical_prices(tickers, years=5):
     # Generate dates (monthly data points)
     end_date = datetime.now()
     start_date = end_date - timedelta(days=365 * years)
-    dates = pd.date_range(start=start_date, end=end_date, freq='M')
+    dates = pd.date_range(start=start_date, end=end_date, freq='ME')  # Month end frequency
     
     # Create a DataFrame to store results
     price_data = pd.DataFrame({'Date': dates})

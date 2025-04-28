@@ -284,6 +284,115 @@ def show_fund_comparison_page():
                     Different funds in the same category may show slightly different performance due to tracking differences, 
                     securities lending income, and other factors.
                 """)
+                
+                # Combined price and fee chart
+                st.subheader("Combined Price and Fee Impact")
+                
+                # Only create this visualization if we have funds to compare
+                if len(selected_funds) > 0:
+                    # Create a figure with secondary y-axis
+                    fig_combined = go.Figure()
+                    
+                    # Calculate estimated returns after fees over time
+                    investment_amount = 10000  # Start with $10,000
+                    
+                    for ticker in selected_funds:
+                        if ticker in price_data.columns:
+                            # Get fund info
+                            fund_info = fund_data[fund_data['Ticker'] == ticker].iloc[0]
+                            expense_ratio = fund_info['Expense Ratio']
+                            
+                            # Calculate growth adjusted for fees
+                            first_price = price_data[ticker].iloc[0]
+                            growth_series = []
+                            
+                            # Get all values except the date column
+                            prices = price_data[ticker].values
+                            dates = price_data['Date'].values
+                            
+                            value = investment_amount
+                            values_after_fees = []
+                            
+                            # Calculate value for each time period, adjusted for fees
+                            for i in range(len(prices)):
+                                if i > 0:
+                                    # Calculate raw return for this period
+                                    period_return = prices[i] / prices[i-1] - 1
+                                    
+                                    # Apply monthly fee (annual fee divided by 12)
+                                    monthly_fee = expense_ratio / 12
+                                    
+                                    # Adjust return for fees
+                                    net_return = period_return - monthly_fee
+                                    
+                                    # Update value
+                                    value = value * (1 + net_return)
+                                
+                                values_after_fees.append(value)
+                            
+                            # Add after-fee growth line
+                            fig_combined.add_trace(go.Scatter(
+                                x=dates,
+                                y=values_after_fees,
+                                mode='lines',
+                                name=f"{ticker} (After {expense_ratio:.3%} Fees)",
+                                hovertemplate='Date: %{x|%b %Y}<br>Value After Fees: $%{y:.2f}'
+                            ))
+                            
+                            # Also calculate total fees paid
+                            cumulative_fees = []
+                            fee_total = 0
+                            
+                            for i in range(len(prices)):
+                                if i > 0:
+                                    # Calculate period fee based on value
+                                    period_fee = values_after_fees[i-1] * (expense_ratio / 12)
+                                    fee_total += period_fee
+                                
+                                cumulative_fees.append(fee_total)
+                            
+                            # Add cumulative fees line with secondary y-axis
+                            fig_combined.add_trace(go.Scatter(
+                                x=dates,
+                                y=cumulative_fees,
+                                mode='lines',
+                                name=f"{ticker} (Fees Paid)",
+                                line=dict(dash='dash'),
+                                hovertemplate='Date: %{x|%b %Y}<br>Cumulative Fees: $%{y:.2f}',
+                                yaxis="y2"
+                            ))
+                    
+                    # Update layout with dual y-axes
+                    fig_combined.update_layout(
+                        title=f'Growth of $10,000 with Fee Impact - {fund_type} Funds',
+                        xaxis_title='Date',
+                        yaxis_title='Value After Fees ($)',
+                        yaxis2=dict(
+                            title='Cumulative Fees Paid ($)',
+                            overlaying='y',
+                            side='right',
+                            rangemode='tozero'
+                        ),
+                        hovermode='x unified',
+                        legend=dict(
+                            orientation="h",
+                            y=-0.2
+                        )
+                    )
+                    
+                    # Format y-axes as currency
+                    fig_combined.update_yaxes(tickprefix='$', tickformat=',.0f')
+                    
+                    # Show the chart
+                    st.plotly_chart(fig_combined, use_container_width=True)
+                    
+                    # Add explanatory note for the combined chart
+                    st.caption("""
+                        This chart illustrates how expense ratios impact actual investment returns over time. 
+                        Solid lines show investment growth after fees, while dashed lines show the cumulative fees paid 
+                        (displayed on the right axis). Even small fee differences can have a significant impact 
+                        on long-term performance.
+                    """)
             else:
                 st.warning("Unable to generate price comparison chart for the selected funds.")
     else:
