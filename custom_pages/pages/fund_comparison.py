@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from data.fund_data import get_fund_data, get_historical_prices
+from data.fund_data import get_fund_data
 
 def show_fund_comparison_page():
     """
@@ -186,121 +186,6 @@ def show_fund_comparison_page():
                 for _, fund in funds_to_compare.iterrows():
                     final_cost = investment_amount * fund['Expense Ratio'] * comparison_years
                     final_costs[fund['Ticker']] = final_cost
-                    
-        # Price comparison over time chart
-        st.subheader("Fund Price Comparison")
-        
-        # Allow selection of funds to compare
-        st.markdown("""
-        Compare how these funds' prices have changed over time. This visualization helps illustrate:
-        - How funds in the same category tend to move together over time
-        - The effect of market events on different fund categories
-        - How funds with lower expense ratios may slightly outperform over long periods
-        - The relative price stability of bond funds compared to stock funds
-        
-        Use the Growth of $10,000 view to see how an initial investment would have grown over time.
-        """)
-        
-        col1, col2 = st.columns([1, 1])
-        
-        with col1:
-            history_years = st.slider(
-                "Years of Price History",
-                min_value=1,
-                max_value=10,
-                value=5
-            )
-        
-        with col2:
-            price_display = st.radio(
-                "Display as",
-                options=["Actual Price", "Growth of $10,000"],
-                index=0
-            )
-        
-        # Generate and display the price chart if there are selected funds
-        if selected_funds:
-            # Get historical price data
-            price_data = get_historical_prices(selected_funds, years=history_years)
-            
-            if not price_data.empty:
-                # Create price comparison chart
-                fig_price = go.Figure()
-                
-                # Handle either actual price or growth format
-                if price_display == "Actual Price":
-                    # Plot actual prices
-                    for ticker in selected_funds:
-                        if ticker in price_data.columns:
-                            fund_info = fund_data[fund_data['Ticker'] == ticker].iloc[0]
-                            fig_price.add_trace(go.Scatter(
-                                x=price_data['Date'],
-                                y=price_data[ticker],
-                                mode='lines',
-                                name=f"{ticker} - {fund_info['Provider']}",
-                                hovertemplate='Date: %{x|%b %Y}<br>Price: $%{y:.2f}'
-                            ))
-                    
-                    # Update layout
-                    fig_price.update_layout(
-                        title=f'Fund Price Comparison - {fund_type} Funds',
-                        xaxis_title='Date',
-                        yaxis_title='Price ($)',
-                        hovermode='x unified'
-                    )
-                    
-                    # Format y-axis as currency
-                    fig_price.update_yaxes(tickprefix='$', tickformat=',.2f')
-                    
-                else:  # Growth of $10,000
-                    # Calculate growth of $10,000 for each fund
-                    initial_investment = 10000
-                    
-                    for ticker in selected_funds:
-                        if ticker in price_data.columns:
-                            # Calculate normalized series
-                            first_price = price_data[ticker].iloc[0]
-                            growth_series = price_data[ticker] / first_price * initial_investment
-                            
-                            # Add to chart
-                            fund_info = fund_data[fund_data['Ticker'] == ticker].iloc[0]
-                            fig_price.add_trace(go.Scatter(
-                                x=price_data['Date'],
-                                y=growth_series,
-                                mode='lines',
-                                name=f"{ticker} - {fund_info['Provider']}",
-                                hovertemplate='Date: %{x|%b %Y}<br>Value: $%{y:.2f}'
-                            ))
-                    
-                    # Update layout
-                    fig_price.update_layout(
-                        title=f'Growth of $10,000 - {fund_type} Funds',
-                        xaxis_title='Date',
-                        yaxis_title='Value ($)',
-                        hovermode='x unified'
-                    )
-                    
-                    # Format y-axis as currency
-                    fig_price.update_yaxes(tickprefix='$', tickformat=',.0f')
-                
-                # Show the chart
-                st.plotly_chart(fig_price, use_container_width=True)
-                
-                # Add explanatory note
-                st.caption("""
-                    **Note:** This chart shows simulated price data based on realistic market conditions and historical 
-                    patterns for each fund category. The simulation accounts for fund-specific characteristics including:
-                    
-                    • Expense ratios (lower expense ratio funds should slightly outperform over time)
-                    • Typical market volatility including bear and bull markets
-                    • Category-specific behaviors (bond funds are more stable than stock funds)
-                    • Realistic correlations between similar funds
-                    
-                    While not representing actual historical prices, this simulation provides a realistic illustration 
-                    of how index funds with similar objectives typically perform relative to each other over time.
-                """)
-            else:
-                st.warning("Unable to generate price comparison chart for the selected funds.")
     else:
         st.warning("No funds match the selected filters. Please adjust your criteria.")
     
