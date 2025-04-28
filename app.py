@@ -55,7 +55,7 @@ with col_title:
 
 # Create tabs for navigation with custom styling
 st.markdown('<div class="nav-container">', unsafe_allow_html=True)
-col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3, col4, col5, col6 = st.columns(6)
 
 # Define active class for current page
 def nav_button(label, page_name, container):
@@ -71,6 +71,7 @@ nav_button("Compound Growth", "Compound Growth", col2)
 nav_button("Fund Comparison", "Fund Comparison", col3)
 nav_button("Tax Efficiency", "Tax Efficiency", col4)
 nav_button("Monte Carlo", "Monte Carlo Simulation", col5)
+nav_button("Financial Literacy", "Financial Literacy", col6)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -92,7 +93,7 @@ st.sidebar.markdown('<h2 style="color:#1E5631; border-bottom:2px solid #eee; pad
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 # Create the navigation with custom styling
-page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation"]
+page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation", "Financial Literacy"]
 page = st.sidebar.radio(
     "Select page:",
     page_options,
@@ -241,6 +242,9 @@ elif page == "Tax Efficiency":
 elif page == "Monte Carlo Simulation":
     from custom_pages.pages.monte_carlo import show_monte_carlo_page
     show_monte_carlo_page(st.session_state.portfolio)
+elif page == "Financial Literacy":
+    from custom_pages.pages.financial_literacy import show_financial_literacy_page
+    show_financial_literacy_page()
 
 # Footer with styled content
 st.markdown('<div class="footer-container">', unsafe_allow_html=True)
