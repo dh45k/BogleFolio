@@ -191,7 +191,15 @@ def show_fund_comparison_page():
         st.subheader("Fund Price Comparison")
         
         # Allow selection of funds to compare
-        st.markdown("Compare how these funds' prices have changed over time.")
+        st.markdown("""
+        Compare how these funds' prices have changed over time. This visualization helps illustrate:
+        - How funds in the same category tend to move together over time
+        - The effect of market events on different fund categories
+        - How funds with lower expense ratios may slightly outperform over long periods
+        - The relative price stability of bond funds compared to stock funds
+        
+        Use the Growth of $10,000 view to see how an initial investment would have grown over time.
+        """)
         
         col1, col2 = st.columns([1, 1])
         
@@ -280,9 +288,16 @@ def show_fund_comparison_page():
                 
                 # Add explanatory note
                 st.caption("""
-                    Note: This chart shows estimated price movements based on typical market behavior for each fund category.
-                    Different funds in the same category may show slightly different performance due to tracking differences, 
-                    securities lending income, and other factors.
+                    **Note:** This chart shows simulated price data based on realistic market conditions and historical 
+                    patterns for each fund category. The simulation accounts for fund-specific characteristics including:
+                    
+                    • Expense ratios (lower expense ratio funds should slightly outperform over time)
+                    • Typical market volatility including bear and bull markets
+                    • Category-specific behaviors (bond funds are more stable than stock funds)
+                    • Realistic correlations between similar funds
+                    
+                    While not representing actual historical prices, this simulation provides a realistic illustration 
+                    of how index funds with similar objectives typically perform relative to each other over time.
                 """)
             else:
                 st.warning("Unable to generate price comparison chart for the selected funds.")
