@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import json
+import base64
 from utils.portfolio import Portfolio
 
 # Set page config
@@ -10,6 +11,26 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Function to load local CSS file
+def load_css(css_file):
+    with open(css_file, "r") as f:
+        css = f.read()
+    return css
+
+# Load custom CSS
+css = load_css("assets/style.css")
+st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+
+# Function to display SVG image
+def render_svg(svg_file):
+    with open(svg_file, "r") as f:
+        svg = f.read()
+    b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
+    html = f'''
+    <img src="data:image/svg+xml;base64,{b64}" width="64" height="64">
+    '''
+    return html
 
 # Initialize session state for portfolio
 if 'portfolio' not in st.session_state:
@@ -24,33 +45,37 @@ if 'current_portfolio_name' not in st.session_state:
 if 'page' not in st.session_state:
     st.session_state.page = "Portfolio Allocation"
 
-# Main app title
-st.title("Boglehead 3-Fund Portfolio Optimizer")
+# Create header with logo and title
+col_logo, col_title = st.columns([1, 5])
+with col_logo:
+    st.markdown(render_svg("assets/logo.svg"), unsafe_allow_html=True)
+with col_title:
+    st.markdown('<h1 class="header-title">Boglehead 3-Fund Portfolio Optimizer</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="header-subtitle">Simplify investing with diversified, low-cost index funds</p>', unsafe_allow_html=True)
 
-# Main page navigation tabs
+# Create tabs for navigation with custom styling
+st.markdown('<div class="nav-container">', unsafe_allow_html=True)
 col1, col2, col3, col4, col5 = st.columns(5)
-with col1:
-    if st.button("Portfolio Allocation", use_container_width=True):
-        st.session_state['page'] = "Portfolio Allocation"
-        st.rerun()
-with col2:
-    if st.button("Compound Growth", use_container_width=True):
-        st.session_state['page'] = "Compound Growth"
-        st.rerun()
-with col3:
-    if st.button("Fund Comparison", use_container_width=True):
-        st.session_state['page'] = "Fund Comparison"
-        st.rerun()
-with col4:
-    if st.button("Tax Efficiency", use_container_width=True):
-        st.session_state['page'] = "Tax Efficiency"
-        st.rerun()
-with col5:
-    if st.button("Monte Carlo", use_container_width=True):
-        st.session_state['page'] = "Monte Carlo Simulation"
-        st.rerun()
 
-st.markdown("---")
+# Define active class for current page
+def nav_button(label, page_name, container):
+    active_class = "active" if st.session_state.page == page_name else ""
+    with container:
+        if st.button(label, key=f"nav_{page_name}", use_container_width=True, 
+                    help=f"Navigate to {label} page"):
+            st.session_state['page'] = page_name
+            st.rerun()
+
+nav_button("Portfolio Allocation", "Portfolio Allocation", col1)
+nav_button("Compound Growth", "Compound Growth", col2)
+nav_button("Fund Comparison", "Fund Comparison", col3)
+nav_button("Tax Efficiency", "Tax Efficiency", col4)
+nav_button("Monte Carlo", "Monte Carlo Simulation", col5)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Add a subtle divider
+st.markdown('<hr style="height:2px;border:none;color:#f0f0f0;background-color:#f0f0f0;margin-bottom:24px;">', unsafe_allow_html=True)
 
 # Hide default Streamlit menu and footer
 hide_menu_style = """
@@ -61,8 +86,12 @@ hide_menu_style = """
         """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
-# Custom navigation sidebar without the default pages
-st.sidebar.markdown("<h2>Navigation</h2>", unsafe_allow_html=True)
+# Custom navigation sidebar with improved styling
+st.sidebar.markdown('<div class="sidebar-header">', unsafe_allow_html=True)
+st.sidebar.markdown('<h2 style="color:#014361; border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px;">Navigation</h2>', unsafe_allow_html=True)
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
+
+# Create the navigation with custom styling
 page_options = ["Portfolio Allocation", "Compound Growth", "Fund Comparison", "Tax Efficiency", "Monte Carlo Simulation"]
 page = st.sidebar.radio(
     "Select page:",
@@ -70,14 +99,17 @@ page = st.sidebar.radio(
     index=page_options.index(st.session_state.page) if st.session_state.page in page_options else 0,
     label_visibility="collapsed"
 )
+
 # Update page in session state when changed via sidebar
 if page != st.session_state.page:
     st.session_state.page = page
     st.rerun()
 
-# Portfolio management in sidebar
-st.sidebar.markdown("---")
-st.sidebar.subheader("Portfolio Management")
+# Portfolio management in sidebar with improved styling
+st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+st.sidebar.markdown('<hr style="margin: 30px 0 20px 0; border-color: #f0f0f0;">', unsafe_allow_html=True)
+st.sidebar.markdown('<h2 style="color:#014361; font-size:1.5rem; margin-bottom:15px;">Portfolio Management</h2>', unsafe_allow_html=True)
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 # Save portfolio
 portfolio_name = st.sidebar.text_input("Portfolio Name:", value=st.session_state.current_portfolio_name)
@@ -149,9 +181,12 @@ elif load_source == "Database":
     except Exception as e:
         st.sidebar.error(f"Error accessing database: {str(e)}")
 
-# Export/Import portfolios
-st.sidebar.markdown("---")
-st.sidebar.subheader("Export/Import")
+# Export/Import portfolios with styled section
+st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+st.sidebar.markdown('<hr style="margin: 30px 0 20px 0; border-color: #f0f0f0;">', unsafe_allow_html=True)
+st.sidebar.markdown('<h2 style="color:#014361; font-size:1.5rem; margin-bottom:15px;">Export/Import</h2>', unsafe_allow_html=True)
+st.sidebar.markdown('<p style="font-size:0.9rem; color:#666; margin-bottom:15px;">Save your portfolios as JSON files or import previously saved portfolios.</p>', unsafe_allow_html=True)
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 if st.sidebar.button("Export Portfolios"):
     # Convert portfolios to JSON
@@ -193,20 +228,48 @@ elif page == "Monte Carlo Simulation":
     from custom_pages.pages.monte_carlo import show_monte_carlo_page
     show_monte_carlo_page(st.session_state.portfolio)
 
-# Footer
-st.markdown("---")
-st.markdown("### About This Tool")
-st.markdown("""
-This tool is designed for Bogleheads to optimize their 3-fund portfolios. It helps visualize asset allocation, 
-project growth over time, compare fund expenses, optimize tax efficiency across different account types,
-and analyze retirement readiness through Monte Carlo simulations.
+# Footer with styled content
+st.markdown('<div class="footer-container">', unsafe_allow_html=True)
+st.markdown('<hr style="margin: 30px 0; border-color: #f0f0f0;">', unsafe_allow_html=True)
 
-Built following Bogleheads investment principles:
-- Low-cost index funds
-- Broad diversification
-- Long-term investment horizon
-- Tax-efficient fund placement
-- Data-driven retirement planning
+# Create columns for the footer
+col1, col2 = st.columns([3, 2])
 
-**DISCLAIMER:** I am not financial, and I am not a tax adviser. This tool and content are for educational and entertainment purposes only. I am only sharing my personal opinion. Please seek professional help when needed.
-""")
+with col1:
+    st.markdown('<h3 class="footer-title">About This Tool</h3>', unsafe_allow_html=True)
+    st.markdown('''
+    <div class="footer-text">
+        <p>This tool is designed for Bogleheads to optimize their 3-fund portfolios. It helps visualize asset allocation, 
+        project growth over time, compare fund expenses, optimize tax efficiency across different account types,
+        and analyze retirement readiness through Monte Carlo simulations.</p>
+        
+        <h4>Built following Bogleheads investment principles:</h4>
+        <ul>
+            <li><strong>Low-cost index funds</strong> - Minimize expenses to maximize returns</li>
+            <li><strong>Broad diversification</strong> - Invest in the entire market</li>
+            <li><strong>Long-term investment horizon</strong> - Stay the course</li>
+            <li><strong>Tax-efficient fund placement</strong> - Optimize across account types</li>
+            <li><strong>Data-driven retirement planning</strong> - Make informed decisions</li>
+        </ul>
+    </div>
+    ''', unsafe_allow_html=True)
+
+with col2:
+    st.markdown('<h3 class="footer-title">Important Information</h3>', unsafe_allow_html=True)
+    st.markdown('''
+    <div class="disclaimer-box">
+        <p><strong>DISCLAIMER:</strong> This tool and content are for educational and information purposes only. 
+        The information provided is not financial or tax advice. Please consult with qualified professionals 
+        before making investment decisions.</p>
+        
+        <p>All recommendations are based on the Bogleheads investment philosophy of passive, 
+        low-cost, diversified investing. Past performance is not indicative of future results.</p>
+    </div>
+    
+    <div class="version-info">
+        <p>Version 1.0 | Last Updated: April 2025</p>
+        <p>Created with ♥ for the Bogleheads community</p>
+    </div>
+    ''', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
